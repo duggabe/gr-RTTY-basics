@@ -1,0 +1,494 @@
+options:
+  parameters:
+    author: Barry Duggan
+    catch_exceptions: 'True'
+    category: '[GRC Hier Blocks]'
+    cmake_opt: ''
+    comment: ''
+    copyright: ''
+    description: ''
+    gen_cmake: 'On'
+    gen_linking: dynamic
+    generate_options: qt_gui
+    hier_block_src_path: '.:'
+    id: RTTY_receive
+    max_nouts: '0'
+    output_language: python
+    placement: (0,0)
+    qt_qss_theme: ''
+    realtime_scheduling: ''
+    run: 'True'
+    run_command: '{python} -u {filename}'
+    run_options: prompt
+    sizing_mode: fixed
+    thread_safe_setters: ''
+    title: RTTY_receive
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [16, 12.0]
+    rotation: 0
+    state: enabled
+
+blocks:
+- name: baud
+  id: variable
+  parameters:
+    comment: ''
+    value: 1/0.022
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [272, 12.0]
+    rotation: 0
+    state: enabled
+- name: center
+  id: variable
+  parameters:
+    comment: ''
+    value: '2210'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [368, 12.0]
+    rotation: 0
+    state: enabled
+- name: fsk_deviation
+  id: variable
+  parameters:
+    comment: ''
+    value: '170'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [456, 12.0]
+    rotation: 0
+    state: enabled
+- name: reverse
+  id: variable_qtgui_chooser
+  parameters:
+    comment: ''
+    gui_hint: ''
+    label: ''
+    label0: Normal
+    label1: Reverse
+    label2: ''
+    label3: ''
+    label4: ''
+    labels: '[]'
+    num_opts: '2'
+    option0: '1'
+    option1: '-1'
+    option2: '2'
+    option3: '3'
+    option4: '4'
+    options: '[0, 1, 2]'
+    orient: Qt.QVBoxLayout
+    type: int
+    value: '1'
+    widget: radio_buttons
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [816, 12.0]
+    rotation: 0
+    state: enabled
+- name: samp_rate
+  id: variable
+  parameters:
+    comment: ''
+    value: '48000'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [184, 12.0]
+    rotation: 0
+    state: enabled
+- name: analog_quadrature_demod_cf_1
+  id: analog_quadrature_demod_cf
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    gain: samp_rate/50*(2*math.pi*fsk_deviation/8.0)
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [440, 156.0]
+    rotation: 0
+    state: enabled
+- name: audio_source_0
+  id: audio_source
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    device_name: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_outputs: '1'
+    ok_to_block: 'True'
+    samp_rate: samp_rate
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [16, 140.0]
+    rotation: 0
+    state: enabled
+- name: blocks_char_to_float_0
+  id: blocks_char_to_float
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    scale: '1'
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [456, 268.0]
+    rotation: 0
+    state: enabled
+- name: blocks_multiply_const_vxx_0
+  id: blocks_multiply_const_vxx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: Normal/Reverse
+    const: reverse
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    type: float
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [816, 156.0]
+    rotation: 0
+    state: enabled
+- name: digital_binary_slicer_fb_0
+  id: digital_binary_slicer_fb
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [288, 272.0]
+    rotation: 0
+    state: enabled
+- name: epy_block_0
+  id: epy_block
+  parameters:
+    _source_code: "\"\"\"\nTerminal Display Sink\n\"\"\"\n\n#  epy_block_0.py\n# \
+      \ revised 07/07/2019\n\nimport numpy as np\nfrom gnuradio import gr\nimport\
+      \ pmt\n\nITA2 = [ '\\x00', 'E', '\\n', 'A', ' ', 'S', 'I', 'U', '\\r', 'D',\
+      \ 'R', 'J', 'N', 'F', 'C', 'K',\n            'T', 'Z', 'L', 'W', 'H', 'Y', 'P',\
+      \ 'Q', 'O', 'B', 'G', '\\x0e', 'M', 'X', 'V', '\\x0f',\n            '\\x00',\
+      \ '3', '\\n', '-', ' ', '\\x07', '8', '7', '\\r', '$', '4', '\\'', ',', '!',\
+      \ ':', '(',\n            '5', '\\\"', ')', '2', '#', '6', '0', '1', '9', '\\\
+      x3f', '\\x26', '\\x0e', '.', '/', ';', '\\x0f' ]\n\n\n_samples = [ 11, 22, 33,\
+      \ 44, 55, 66, 77 ]\n_in_sync = 0\n_bit_count = 0\t# actually sample count from\
+      \ beginning of start bit\n_num_ones = 0\n_num_zeros = 0\n_byte = 0\t# this is\
+      \ the index into ITA2\n_in_bit = 0\n_shift = 0\noutLine = []\noutCount = 0\n\
+      \nclass my_sync_block(gr.sync_block):\n    \"\"\"\n\treads stream of 1's and\
+      \ 0's\n\tthere are 11 samples for each bit time\n\tsynchronizes on start bit\n\
+      \tuses majority of samples in a bit to determine validity\n\tcreates Baudot\
+      \ character\n\tconverts Baudot to UTF-8\n\tdisplays characters on terminal screen\n\
+      \    \"\"\"\n    def __init__(self):\n        gr.sync_block.__init__(self,\n\
+      \            name = \"Terminal Display Sink\",\n            in_sig = [np.byte],\n\
+      \            out_sig = None)\n        self.message_port_register_out(pmt.intern('msg_out'))\n\
+      \n    def work(self, input_items, output_items):\n        global _samples\n\
+      \        global _in_sync\n        global _bit_count\n        global _num_ones\n\
+      \        global _num_zeros\n        global _byte\n        global _in_bit\n \
+      \       global _shift\n        global outLine\n        global outCount\n\n \
+      \       for ch in input_items[0]:\n            if (ch == 1):\n             \
+      \   _num_ones += 1       # count ones in this symbol time\n            else:\n\
+      \                _num_zeros += 1      # count zeros in this symbol time\n  \
+      \          _bit_count += 1          # count from first start bit after syncing\n\
+      \            if (_in_sync == 0):\n                if (ch == 0):\n          \
+      \          _in_sync = 1\n                    _bit_count = 1\n              \
+      \      _num_ones = 0\n                    _num_zeros = 1\n                 \
+      \   _byte = 0\n                    # print (\"sync\")\n\n            if (_bit_count\
+      \ in _samples) and (_in_sync == 1):    # end of this symbol time\n         \
+      \       if (_num_ones > 7):\n                    _in_bit = 1\n             \
+      \   elif (_num_zeros > 7):\n                    _in_bit = 0\n              \
+      \  else:\n                    _in_bit = -1\n                    _in_sync = 0\
+      \    # lots of noise\n                # print (\"_in_sync\", _in_sync)\n   \
+      \             # print (\"_bit_count\", _bit_count)\n                # print\
+      \ (\"_num_ones\", _num_ones)\n                # print (\"_num_zeros\", _num_zeros)\n\
+      \                _num_ones = 0\n                _num_zeros = 0\n\n         \
+      \       if (_in_sync == 1) and (_bit_count < 77):\n                    _byte\
+      \ >>= 1\n                    if (_in_bit == 1):\n                        _byte\
+      \ += 16\n                    # print (_byte)\n\n                if (_in_sync\
+      \ == 1) and (_bit_count == 77):\n                    if (_byte > 0) and (_byte\
+      \ < 64):\n                        _byte += _shift\n                        if\
+      \ ((_byte == 0x1b) or (_byte == 0x3b)):        # shift out (figs)\n        \
+      \                    _shift = 0x20\n                        elif ((_byte ==\
+      \ 0x1f) or (_byte == 0x3f)):        # shift in (ltrs)\n                    \
+      \        _shift = 0\n                        else:\n                       \
+      \     if ((_byte != 2) and (_byte != 34)):\n                               \
+      \ outLine.append (ITA2[_byte])\n                    else:\n                \
+      \        outLine.append ('*')\n                    _num_ones = 0\n         \
+      \           _num_zeros = 0\n                    _in_sync = 0\n             \
+      \       _bit_count = 0\n                    outCount += 1\n                \
+      \    if ((outCount > 80) and (ITA2[_byte] == ' ')) or (_byte == 2) or (_byte\
+      \ == 34):  # LF\n                        dispLine = \"\".join (outLine)\n  \
+      \                      self.message_port_pub (pmt.intern('msg_out'), pmt.intern\
+      \ (dispLine))\n                        outLine = []\n                      \
+      \  outCount = 0\n\n        return len(input_items[0])\n\n"
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    _io_cache: ('Terminal Display Sink', 'my_sync_block', [], [('0', 'byte', 1)],
+      [('msg_out', 'message', 1)], "\n\treads stream of 1's and 0's\n\tthere are 11
+      samples for each bit time\n\tsynchronizes on start bit\n\tuses majority of samples
+      in a bit to determine validity\n\tcreates Baudot character\n\tconverts Baudot
+      to UTF-8\n\tdisplays characters on terminal screen\n    ", [])
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [448, 360.0]
+    rotation: 0
+    state: enabled
+- name: freq_xlating_fir_filter_xxx_0
+  id: freq_xlating_fir_filter_xxx
+  parameters:
+    affinity: ''
+    alias: ''
+    center_freq: center
+    comment: ''
+    decim: '50'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    samp_rate: samp_rate
+    taps: firdes.low_pass(1.0,samp_rate,1000,400)
+    type: fcf
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [200, 132.0]
+    rotation: 0
+    state: enabled
+- name: note_0
+  id: note
+  parameters:
+    alias: ''
+    comment: ''
+    note: sample rate 960
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [440, 100.0]
+    rotation: 0
+    state: enabled
+- name: note_0_0
+  id: note
+  parameters:
+    alias: ''
+    comment: ''
+    note: 11 samples per bit
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [624, 84.0]
+    rotation: 0
+    state: enabled
+- name: qtgui_time_sink_x_0
+  id: qtgui_time_sink_x
+  parameters:
+    affinity: ''
+    alias: ''
+    alpha1: '1.0'
+    alpha10: '1.0'
+    alpha2: '1.0'
+    alpha3: '1.0'
+    alpha4: '1.0'
+    alpha5: '1.0'
+    alpha6: '1.0'
+    alpha7: '1.0'
+    alpha8: '1.0'
+    alpha9: '1.0'
+    autoscale: 'False'
+    axislabels: 'True'
+    color1: blue
+    color10: dark blue
+    color2: red
+    color3: green
+    color4: black
+    color5: cyan
+    color6: magenta
+    color7: yellow
+    color8: dark red
+    color9: dark green
+    comment: ''
+    ctrlpanel: 'True'
+    entags: 'True'
+    grid: 'False'
+    gui_hint: ''
+    label1: ''
+    label10: ''
+    label2: ''
+    label3: ''
+    label4: ''
+    label5: ''
+    label6: ''
+    label7: ''
+    label8: ''
+    label9: ''
+    legend: 'True'
+    marker1: '-1'
+    marker10: '-1'
+    marker2: '-1'
+    marker3: '-1'
+    marker4: '-1'
+    marker5: '-1'
+    marker6: '-1'
+    marker7: '-1'
+    marker8: '-1'
+    marker9: '-1'
+    name: '""'
+    nconnections: '1'
+    size: '128'
+    srate: '500'
+    stemplot: 'False'
+    style1: '1'
+    style10: '1'
+    style2: '1'
+    style3: '1'
+    style4: '1'
+    style5: '1'
+    style6: '1'
+    style7: '1'
+    style8: '1'
+    style9: '1'
+    tr_chan: '0'
+    tr_delay: '0'
+    tr_level: '0.5'
+    tr_mode: qtgui.TRIG_MODE_NORM
+    tr_slope: qtgui.TRIG_SLOPE_NEG
+    tr_tag: '""'
+    type: float
+    update_time: '0.10'
+    width1: '1'
+    width10: '1'
+    width2: '1'
+    width3: '1'
+    width4: '1'
+    width5: '1'
+    width6: '1'
+    width7: '1'
+    width8: '1'
+    width9: '1'
+    ylabel: Amplitude
+    ymax: '2'
+    ymin: '-1'
+    yunit: '""'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [616, 252.0]
+    rotation: 0
+    state: enabled
+- name: rational_resampler_xxx_0_0
+  id: rational_resampler_xxx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    decim: '960'
+    fbw: '0'
+    interp: '500'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    taps: ''
+    type: fff
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [624, 132.0]
+    rotation: 0
+    state: enabled
+- name: virtual_sink_0
+  id: virtual_sink
+  parameters:
+    alias: ''
+    comment: ''
+    stream_id: '"rcv_demod"'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [984, 156.0]
+    rotation: 0
+    state: true
+- name: virtual_source_0
+  id: virtual_source
+  parameters:
+    alias: ''
+    comment: ''
+    stream_id: '"rcv_demod"'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [80, 268.0]
+    rotation: 0
+    state: true
+- name: zeromq_push_msg_sink_0
+  id: zeromq_push_msg_sink
+  parameters:
+    address: tcp://127.0.0.1:50252
+    affinity: ''
+    alias: ''
+    bind: 'True'
+    comment: ''
+    timeout: '100'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [696, 348.0]
+    rotation: 0
+    state: true
+
+connections:
+- [analog_quadrature_demod_cf_1, '0', rational_resampler_xxx_0_0, '0']
+- [audio_source_0, '0', freq_xlating_fir_filter_xxx_0, '0']
+- [blocks_char_to_float_0, '0', qtgui_time_sink_x_0, '0']
+- [blocks_multiply_const_vxx_0, '0', virtual_sink_0, '0']
+- [digital_binary_slicer_fb_0, '0', blocks_char_to_float_0, '0']
+- [digital_binary_slicer_fb_0, '0', epy_block_0, '0']
+- [epy_block_0, msg_out, zeromq_push_msg_sink_0, in]
+- [freq_xlating_fir_filter_xxx_0, '0', analog_quadrature_demod_cf_1, '0']
+- [rational_resampler_xxx_0_0, '0', blocks_multiply_const_vxx_0, '0']
+- [virtual_source_0, '0', digital_binary_slicer_fb_0, '0']
+
+metadata:
+  file_format: 1
