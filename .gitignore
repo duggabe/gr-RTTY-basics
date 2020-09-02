@@ -1,0 +1,5 @@
+._*
+.DS_Store
+RTTY_rcv/__pycache__/
+RTTY_xmt/__pycache__/
+

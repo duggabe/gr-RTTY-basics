@@ -32,10 +32,43 @@ git clone https://github.com/duggabe/gr-RTTY-basics.git
 
 ### gr-webserver
 
-Go to [gr-webserver](https://github.com/duggabe/gr-webserver) and follow the instructions to install it using a separate terminal screen.
+Go to [gr-webserver](https://github.com/duggabe/gr-webserver) and follow the instructions to install and start it using a separate terminal screen.
 
 ## Operation
 
-* more to come
+### RTTY transmitter
 
+1. Open a terminal window.
+2. Go to the gr-RTTY-basics/RTTY_xmt folder.  
+```
+cd ~/gr-RTTY-basics/RTTY_xmt
+```
+3. Execute Gnu Radio Companion.  
+```
+gnuradio-companion
+```
+4. Open RTTY_vco.grc from the file menu.
+5. Click 'Run' and 'Execute' or press F6.
+6. A new window titled "RTTY_vco" will open showing a scope trace with the transmitted signal.
+7. To Terminate the program, click the 'x' in the corner of the title line.
+
+
+### RTTY receiver
+
+1. Open a terminal window.
+2. Go to the gr-RTTY-basics/RTTY_rcv folder.  
+```
+cd ~/gr-RTTY-basics/RTTY_rcv
+```
+3. Execute Gnu Radio Companion.  
+```
+gnuradio-companion
+```
+4. Open RTTY_receive.grc from the file menu.
+5. Click 'Run' and 'Execute' or press F6.
+6. A new window titled "RTTY_receive" will open showing a chooser block with 'Normal' and 'Reverse'. If the received signal has reversed Mark and Space tones, click the 'Reverse' button. A scope trace shows the received signal.
+
+### Loop-back test
+
+If you connect the audio output of the transmitter to the audio input of the receiver using a patch cable, you can perform a loop-back test. Whatever you type in the gr-webserver screen will be displayed as received, preceeded by a less-than sign, in all capital letters. There will be a delay in the response.
 
