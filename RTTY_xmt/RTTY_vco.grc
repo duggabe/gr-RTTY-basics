@@ -255,22 +255,23 @@ blocks:
       \ global _figs\n        global _ltrs\n        global _shift\n        global\
       \ bit_stream\n        global CQita2\n\n#       convert UTF-8 to ITA2 (Baudot)\n\
       \        if (len (textboxValue) > 0):\n            bit_stream = [ 1, 1, 1, 1,\
-      \ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ]\n            CQita2 = []\n          \
-      \  for in0 in textboxValue:\n                # get next char\n             \
-      \   inChar = str (in0)\n                # convert to upper case\n          \
-      \      ch = inChar.upper()\n                # test for character in ITA2\n \
-      \               if (ch in ITA2):\n                    _idx = ITA2.index (ch)\n\
-      #                   if (not space)\n                    if (ch != ' '):\n# \
-      \                      if index > 31       // figures\n                    \
-      \    if (_idx > 31):\n                            if (_shift == 0):\n      \
-      \                          CQita2.append (0x1b)    # send 'figures' code\n \
-      \                               _shift = 0x20\n                        else:\
-      \                    # letters\n                            if (_shift > 0):\n\
-      \                                CQita2.append (0x1f)     # send 'letters' code\n\
-      \                                _shift = 0\n#                   store ITA2\
-      \ char\n                    _idx &= 0x1F\n                    CQita2.append\
-      \ (int(_idx))\n                else:\n                    CQita2.append (4)\
-      \    # space\n            CQita2.append (8)    # CR\n            CQita2.append\
+      \ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ]\n            CQita2 = [31, 31]    # LTRS\n\
+      \            _shift = 0\n            for in0 in textboxValue:\n            \
+      \    # get next char\n                inChar = str (in0)\n                #\
+      \ convert to upper case\n                ch = inChar.upper()\n             \
+      \   # test for character in ITA2\n                if (ch in ITA2):\n       \
+      \             _idx = ITA2.index (ch)\n#                   if (not space)\n \
+      \                   if (ch != ' '):\n#                       if index > 31 \
+      \      // figures\n                        if (_idx > 31):\n               \
+      \             if (_shift == 0):\n                                CQita2.append\
+      \ (0x1b)    # send 'figures' code\n                                _shift =\
+      \ 0x20\n                        else:                    # letters\n       \
+      \                     if (_shift > 0):\n                                CQita2.append\
+      \ (0x1f)     # send 'letters' code\n                                _shift =\
+      \ 0\n#                   store ITA2 char\n                    _idx &= 0x1F\n\
+      \                    CQita2.append (int(_idx))\n                else:\n    \
+      \                CQita2.append (4)    # space\n            CQita2.append (8)\
+      \    # CR\n            CQita2.append (8)    # CR\n            CQita2.append\
       \ (2)    # LF\n#            print (\"CQita2:\")\n#            print (CQita2)\n\
       \n#           serialize data LSB first\n            for _out in CQita2:\n  \
       \              outDat = _out\n                _bit_count = 0\n             \

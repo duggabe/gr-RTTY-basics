@@ -50,7 +50,8 @@ class mc_sync_block(gr.sync_block):
 #       convert UTF-8 to ITA2 (Baudot)
         if (len (textboxValue) > 0):
             bit_stream = [ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ]
-            CQita2 = []
+            CQita2 = [31, 31]    # LTRS
+            _shift = 0
             for in0 in textboxValue:
                 # get next char
                 inChar = str (in0)
@@ -75,6 +76,7 @@ class mc_sync_block(gr.sync_block):
                     CQita2.append (int(_idx))
                 else:
                     CQita2.append (4)    # space
+            CQita2.append (8)    # CR
             CQita2.append (8)    # CR
             CQita2.append (2)    # LF
 #            print ("CQita2:")
