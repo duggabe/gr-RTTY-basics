@@ -241,8 +241,8 @@ blocks:
       \ 'Z', 'L', 'W', 'H', 'Y', 'P', 'Q', 'O', 'B', 'G', 0x0e, 'M', 'X', 'V', 0x0f,\n\
       \            0x00, '3', '\\n', '-', ' ', 0x07, '8', '7', '\\r', '$', '4', '\\\
       '', ',', '!', ':', '(',\n            '5', '\\\"', ')', '2', '#', '6', '0', '1',\
-      \ '9', 0x3f, 0x26, 0x0e, '.', '/', ';', 0x0f ]\n\ntextboxValue = \"\"\n_figs\
-      \ = 0x1b\n_ltrs = 0x1f\n_shift = 0\nbit_stream = []\nCQita2 =  []\n\nclass mc_sync_block(gr.sync_block):\n\
+      \ '9', '?', '&', 0x0e, '.', '/', ';', 0x0f ]\n\ntextboxValue = \"\"\n_figs =\
+      \ 0x1b\n_ltrs = 0x1f\n_shift = 0\nbit_stream = []\nCQita2 =  []\n\nclass mc_sync_block(gr.sync_block):\n\
       \    \"\"\"\n    reads input from a message port\n    generates a vector of\
       \ Baudot code bits\n    \"\"\"\n    def __init__(self):\n        gr.sync_block.__init__(self,\n\
       \            name = \"Baudot code vector source\",\n            in_sig = None,\n\

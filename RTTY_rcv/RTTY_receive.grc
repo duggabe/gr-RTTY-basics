@@ -242,55 +242,54 @@ blocks:
       \ 'R', 'J', 'N', 'F', 'C', 'K',\n            'T', 'Z', 'L', 'W', 'H', 'Y', 'P',\
       \ 'Q', 'O', 'B', 'G', '\\x0e', 'M', 'X', 'V', '\\x0f',\n            '\\x00',\
       \ '3', '\\n', '-', ' ', '\\x07', '8', '7', '\\r', '$', '4', '\\'', ',', '!',\
-      \ ':', '(',\n            '5', '\\\"', ')', '2', '#', '6', '0', '1', '9', '\\\
-      x3f', '\\x26', '\\x0e', '.', '/', ';', '\\x0f' ]\n\n\n_samples = [ 11, 22, 33,\
-      \ 44, 55, 66, 77 ]\n_in_sync = 0\n_bit_count = 0\t# actually sample count from\
-      \ beginning of start bit\n_num_ones = 0\n_num_zeros = 0\n_byte = 0\t# this is\
-      \ the index into ITA2\n_in_bit = 0\n_shift = 0\noutLine = []\noutCount = 0\n\
-      \nclass my_sync_block(gr.sync_block):\n    \"\"\"\n\treads stream of 1's and\
-      \ 0's\n\tthere are 11 samples for each bit time\n\tsynchronizes on start bit\n\
-      \tuses majority of samples in a bit to determine validity\n\tcreates Baudot\
-      \ character\n\tconverts Baudot to UTF-8\n\tdisplays characters on terminal screen\n\
-      \    \"\"\"\n    def __init__(self):\n        gr.sync_block.__init__(self,\n\
-      \            name = \"Terminal Display Sink\",\n            in_sig = [np.byte],\n\
-      \            out_sig = None)\n        self.message_port_register_out(pmt.intern('msg_out'))\n\
-      \n    def work(self, input_items, output_items):\n        global _samples\n\
-      \        global _in_sync\n        global _bit_count\n        global _num_ones\n\
-      \        global _num_zeros\n        global _byte\n        global _in_bit\n \
-      \       global _shift\n        global outLine\n        global outCount\n\n \
-      \       for ch in input_items[0]:\n            if (ch == 1):\n             \
-      \   _num_ones += 1       # count ones in this symbol time\n            else:\n\
-      \                _num_zeros += 1      # count zeros in this symbol time\n  \
-      \          _bit_count += 1          # count from first start bit after syncing\n\
-      \            if (_in_sync == 0):\n                if (ch == 0):\n          \
-      \          _in_sync = 1\n                    _bit_count = 1\n              \
-      \      _num_ones = 0\n                    _num_zeros = 1\n                 \
-      \   _byte = 0\n                    # print (\"sync\")\n\n            if (_bit_count\
-      \ in _samples) and (_in_sync == 1):    # end of this symbol time\n         \
-      \       if (_num_ones > 7):\n                    _in_bit = 1\n             \
-      \   elif (_num_zeros > 7):\n                    _in_bit = 0\n              \
-      \  else:\n                    _in_bit = -1\n                    _in_sync = 0\
-      \    # lots of noise\n                # print (\"_in_sync\", _in_sync)\n   \
-      \             # print (\"_bit_count\", _bit_count)\n                # print\
-      \ (\"_num_ones\", _num_ones)\n                # print (\"_num_zeros\", _num_zeros)\n\
-      \                _num_ones = 0\n                _num_zeros = 0\n\n         \
-      \       if (_in_sync == 1) and (_bit_count < 77):\n                    _byte\
-      \ >>= 1\n                    if (_in_bit == 1):\n                        _byte\
-      \ += 16\n                    # print (_byte)\n\n                if (_in_sync\
-      \ == 1) and (_bit_count == 77):\n                    if (_byte > 0) and (_byte\
-      \ < 64):\n                        _byte += _shift\n                        if\
-      \ ((_byte == 0x1b) or (_byte == 0x3b)):        # shift out (figs)\n        \
-      \                    _shift = 0x20\n                        elif ((_byte ==\
-      \ 0x1f) or (_byte == 0x3f)):        # shift in (ltrs)\n                    \
-      \        _shift = 0\n                        else:\n                       \
-      \     if ((_byte != 2) and (_byte != 34)):\n                               \
-      \ outLine.append (ITA2[_byte])\n                    else:\n                \
-      \        outLine.append ('*')\n                    _num_ones = 0\n         \
-      \           _num_zeros = 0\n                    _in_sync = 0\n             \
-      \       _bit_count = 0\n                    outCount += 1\n                \
-      \    if ((outCount > 80) and (ITA2[_byte] == ' ')) or (_byte == 2) or (_byte\
-      \ == 34):  # LF\n                        dispLine = \"\".join (outLine)\n  \
-      \                      self.message_port_pub (pmt.intern('msg_out'), pmt.intern\
+      \ ':', '(',\n            '5', '\\\"', ')', '2', '#', '6', '0', '1', '9', '?',\
+      \ '&', '\\x0e', '.', '/', ';', '\\x0f' ]\n\n\n_samples = [ 11, 22, 33, 44, 55,\
+      \ 66, 77 ]\n_in_sync = 0\n_bit_count = 0\t# actually sample count from beginning\
+      \ of start bit\n_num_ones = 0\n_num_zeros = 0\n_byte = 0\t# this is the index\
+      \ into ITA2\n_in_bit = 0\n_shift = 0\noutLine = []\noutCount = 0\n\nclass my_sync_block(gr.sync_block):\n\
+      \    \"\"\"\n\treads stream of 1's and 0's\n\tthere are 11 samples for each\
+      \ bit time\n\tsynchronizes on start bit\n\tuses majority of samples in a bit\
+      \ to determine validity\n\tcreates Baudot character\n\tconverts Baudot to UTF-8\n\
+      \tdisplays characters on terminal screen\n    \"\"\"\n    def __init__(self):\n\
+      \        gr.sync_block.__init__(self,\n            name = \"Terminal Display\
+      \ Sink\",\n            in_sig = [np.byte],\n            out_sig = None)\n  \
+      \      self.message_port_register_out(pmt.intern('msg_out'))\n\n    def work(self,\
+      \ input_items, output_items):\n        global _samples\n        global _in_sync\n\
+      \        global _bit_count\n        global _num_ones\n        global _num_zeros\n\
+      \        global _byte\n        global _in_bit\n        global _shift\n     \
+      \   global outLine\n        global outCount\n\n        for ch in input_items[0]:\n\
+      \            if (ch == 1):\n                _num_ones += 1       # count ones\
+      \ in this symbol time\n            else:\n                _num_zeros += 1  \
+      \    # count zeros in this symbol time\n            _bit_count += 1        \
+      \  # count from first start bit after syncing\n            if (_in_sync == 0):\n\
+      \                if (ch == 0):\n                    _in_sync = 1\n         \
+      \           _bit_count = 1\n                    _num_ones = 0\n            \
+      \        _num_zeros = 1\n                    _byte = 0\n                   \
+      \ # print (\"sync\")\n\n            if (_bit_count in _samples) and (_in_sync\
+      \ == 1):    # end of this symbol time\n                if (_num_ones > 7):\n\
+      \                    _in_bit = 1\n                elif (_num_zeros > 7):\n \
+      \                   _in_bit = 0\n                else:\n                   \
+      \ _in_bit = -1\n                    _in_sync = 0    # lots of noise\n      \
+      \          # print (\"_in_sync\", _in_sync)\n                # print (\"_bit_count\"\
+      , _bit_count)\n                # print (\"_num_ones\", _num_ones)\n        \
+      \        # print (\"_num_zeros\", _num_zeros)\n                _num_ones = 0\n\
+      \                _num_zeros = 0\n\n                if (_in_sync == 1) and (_bit_count\
+      \ < 77):\n                    _byte >>= 1\n                    if (_in_bit ==\
+      \ 1):\n                        _byte += 16\n                    # print (_byte)\n\
+      \n                if (_in_sync == 1) and (_bit_count == 77):\n             \
+      \       if (_byte > 0) and (_byte < 64):\n                        _byte += _shift\n\
+      \                        if ((_byte == 0x1b) or (_byte == 0x3b)):        # shift\
+      \ out (figs)\n                            _shift = 0x20\n                  \
+      \      elif ((_byte == 0x1f) or (_byte == 0x3f)):        # shift in (ltrs)\n\
+      \                            _shift = 0\n                        else:\n   \
+      \                         if ((_byte != 2) and (_byte != 34)):\n           \
+      \                     outLine.append (ITA2[_byte])\n                    else:\n\
+      \                        outLine.append ('*')\n                    _num_ones\
+      \ = 0\n                    _num_zeros = 0\n                    _in_sync = 0\n\
+      \                    _bit_count = 0\n                    outCount += 1\n   \
+      \                 if ((outCount > 80) and (ITA2[_byte] == ' ')) or (_byte ==\
+      \ 2) or (_byte == 34):  # LF\n                        dispLine = \"\".join (outLine)\n\
+      \                        self.message_port_pub (pmt.intern('msg_out'), pmt.intern\
       \ (dispLine))\n                        outLine = []\n                      \
       \  outCount = 0\n\n        return len(input_items[0])\n\n"
     affinity: ''
