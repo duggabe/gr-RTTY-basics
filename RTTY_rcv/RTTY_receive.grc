@@ -56,6 +56,18 @@ blocks:
     coordinate: [368, 12.0]
     rotation: 0
     state: enabled
+- name: decim
+  id: variable
+  parameters:
+    comment: ''
+    value: '50'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [184, 76.0]
+    rotation: 0
+    state: true
 - name: fsk_deviation
   id: variable
   parameters:
@@ -131,13 +143,13 @@ blocks:
     coordinate: [456, 12.0]
     rotation: 0
     state: enabled
-- name: analog_quadrature_demod_cf_1
+- name: analog_quadrature_demod_cf_0
   id: analog_quadrature_demod_cf
   parameters:
     affinity: ''
     alias: ''
     comment: ''
-    gain: samp_rate/50*(2*math.pi*fsk_deviation/8.0)
+    gain: '1.0'
     maxoutbuf: '0'
     minoutbuf: '0'
   states:
@@ -146,7 +158,7 @@ blocks:
     bus_structure: null
     coordinate: [616, 156.0]
     rotation: 0
-    state: enabled
+    state: true
 - name: analog_simple_squelch_cc_0
   id: analog_simple_squelch_cc
   parameters:
@@ -180,26 +192,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [16, 140.0]
+    coordinate: [24, 212.0]
     rotation: 0
     state: enabled
-- name: blocks_char_to_float_0
-  id: blocks_char_to_float
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    scale: '1'
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [456, 452.0]
-    rotation: 0
-    state: disabled
 - name: blocks_multiply_const_vxx_0
   id: blocks_multiply_const_vxx
   parameters:
@@ -326,7 +321,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [200, 132.0]
+    coordinate: [208, 204.0]
     rotation: 0
     state: enabled
 - name: note_0
@@ -492,7 +487,7 @@ blocks:
     name: '""'
     nconnections: '1'
     size: '128'
-    srate: '500'
+    srate: '960'
     stemplot: 'False'
     style1: '1'
     style10: '1'
@@ -530,9 +525,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [616, 436.0]
+    coordinate: [800, 236.0]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: rational_resampler_xxx_0_0
   id: rational_resampler_xxx
   parameters:
@@ -597,12 +592,11 @@ blocks:
     state: true
 
 connections:
-- [analog_quadrature_demod_cf_1, '0', rational_resampler_xxx_0_0, '0']
-- [analog_simple_squelch_cc_0, '0', analog_quadrature_demod_cf_1, '0']
+- [analog_quadrature_demod_cf_0, '0', qtgui_time_sink_x_0, '0']
+- [analog_quadrature_demod_cf_0, '0', rational_resampler_xxx_0_0, '0']
+- [analog_simple_squelch_cc_0, '0', analog_quadrature_demod_cf_0, '0']
 - [audio_source_0, '0', freq_xlating_fir_filter_xxx_0, '0']
-- [blocks_char_to_float_0, '0', qtgui_time_sink_x_0, '0']
 - [blocks_multiply_const_vxx_0, '0', virtual_sink_0, '0']
-- [digital_binary_slicer_fb_0, '0', blocks_char_to_float_0, '0']
 - [digital_binary_slicer_fb_0, '0', epy_block_0, '0']
 - [epy_block_0, msg_out, zeromq_push_msg_sink_0, in]
 - [freq_xlating_fir_filter_xxx_0, '0', analog_simple_squelch_cc_0, '0']

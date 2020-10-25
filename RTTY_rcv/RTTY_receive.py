@@ -85,6 +85,7 @@ class RTTY_receive(gr.top_block, Qt.QWidget):
         self.samp_rate = samp_rate = 48000
         self.reverse = reverse = 1
         self.fsk_deviation = fsk_deviation = 170
+        self.decim = decim = 50
         self.center = center = 2210
         self.baud = baud = 1/0.022
 
@@ -125,6 +126,54 @@ class RTTY_receive(gr.top_block, Qt.QWidget):
                 decimation=960,
                 taps=None,
                 fractional_bw=None)
+        self.qtgui_time_sink_x_0 = qtgui.time_sink_f(
+            128, #size
+            960, #samp_rate
+            "", #name
+            1, #number of inputs
+            None # parent
+        )
+        self.qtgui_time_sink_x_0.set_update_time(0.10)
+        self.qtgui_time_sink_x_0.set_y_axis(0, 1)
+
+        self.qtgui_time_sink_x_0.set_y_label('Amplitude', "")
+
+        self.qtgui_time_sink_x_0.enable_tags(True)
+        self.qtgui_time_sink_x_0.set_trigger_mode(qtgui.TRIG_MODE_NORM, qtgui.TRIG_SLOPE_NEG, 0.5, 0, 0, "")
+        self.qtgui_time_sink_x_0.enable_autoscale(False)
+        self.qtgui_time_sink_x_0.enable_grid(False)
+        self.qtgui_time_sink_x_0.enable_axis_labels(True)
+        self.qtgui_time_sink_x_0.enable_control_panel(False)
+        self.qtgui_time_sink_x_0.enable_stem_plot(False)
+
+
+        labels = ['Signal 1', 'Signal 2', 'Signal 3', 'Signal 4', 'Signal 5',
+            'Signal 6', 'Signal 7', 'Signal 8', 'Signal 9', 'Signal 10']
+        widths = [1, 1, 1, 1, 1,
+            1, 1, 1, 1, 1]
+        colors = ['blue', 'red', 'green', 'black', 'cyan',
+            'magenta', 'yellow', 'dark red', 'dark green', 'dark blue']
+        alphas = [1.0, 1.0, 1.0, 1.0, 1.0,
+            1.0, 1.0, 1.0, 1.0, 1.0]
+        styles = [1, 1, 1, 1, 1,
+            1, 1, 1, 1, 1]
+        markers = [-1, -1, -1, -1, -1,
+            -1, -1, -1, -1, -1]
+
+
+        for i in range(1):
+            if len(labels[i]) == 0:
+                self.qtgui_time_sink_x_0.set_line_label(i, "Data {0}".format(i))
+            else:
+                self.qtgui_time_sink_x_0.set_line_label(i, labels[i])
+            self.qtgui_time_sink_x_0.set_line_width(i, widths[i])
+            self.qtgui_time_sink_x_0.set_line_color(i, colors[i])
+            self.qtgui_time_sink_x_0.set_line_style(i, styles[i])
+            self.qtgui_time_sink_x_0.set_line_marker(i, markers[i])
+            self.qtgui_time_sink_x_0.set_line_alpha(i, alphas[i])
+
+        self._qtgui_time_sink_x_0_win = sip.wrapinstance(self.qtgui_time_sink_x_0.pyqwidget(), Qt.QWidget)
+        self.top_grid_layout.addWidget(self._qtgui_time_sink_x_0_win)
         self.qtgui_freq_sink_x_0 = qtgui.freq_sink_c(
             1024, #size
             firdes.WIN_BLACKMAN_hARRIS, #wintype
@@ -173,7 +222,7 @@ class RTTY_receive(gr.top_block, Qt.QWidget):
         self.blocks_multiply_const_vxx_0 = blocks.multiply_const_ff(reverse)
         self.audio_source_0 = audio.source(samp_rate, '', True)
         self.analog_simple_squelch_cc_0 = analog.simple_squelch_cc(sq_lvl, 1)
-        self.analog_quadrature_demod_cf_1 = analog.quadrature_demod_cf(samp_rate/50*(2*math.pi*fsk_deviation/8.0))
+        self.analog_quadrature_demod_cf_0 = analog.quadrature_demod_cf(1.0)
 
 
 
@@ -181,8 +230,9 @@ class RTTY_receive(gr.top_block, Qt.QWidget):
         # Connections
         ##################################################
         self.msg_connect((self.epy_block_0, 'msg_out'), (self.zeromq_push_msg_sink_0, 'in'))
-        self.connect((self.analog_quadrature_demod_cf_1, 0), (self.rational_resampler_xxx_0_0, 0))
-        self.connect((self.analog_simple_squelch_cc_0, 0), (self.analog_quadrature_demod_cf_1, 0))
+        self.connect((self.analog_quadrature_demod_cf_0, 0), (self.qtgui_time_sink_x_0, 0))
+        self.connect((self.analog_quadrature_demod_cf_0, 0), (self.rational_resampler_xxx_0_0, 0))
+        self.connect((self.analog_simple_squelch_cc_0, 0), (self.analog_quadrature_demod_cf_0, 0))
         self.connect((self.audio_source_0, 0), (self.freq_xlating_fir_filter_xxx_0, 0))
         self.connect((self.blocks_multiply_const_vxx_0, 0), (self.digital_binary_slicer_fb_0, 0))
         self.connect((self.digital_binary_slicer_fb_0, 0), (self.epy_block_0, 0))
@@ -208,7 +258,6 @@ class RTTY_receive(gr.top_block, Qt.QWidget):
 
     def set_samp_rate(self, samp_rate):
         self.samp_rate = samp_rate
-        self.analog_quadrature_demod_cf_1.set_gain(self.samp_rate/50*(2*math.pi*self.fsk_deviation/8.0))
         self.freq_xlating_fir_filter_xxx_0.set_taps(firdes.low_pass(1.0,self.samp_rate,1000,400))
 
     def get_reverse(self):
@@ -224,7 +273,12 @@ class RTTY_receive(gr.top_block, Qt.QWidget):
 
     def set_fsk_deviation(self, fsk_deviation):
         self.fsk_deviation = fsk_deviation
-        self.analog_quadrature_demod_cf_1.set_gain(self.samp_rate/50*(2*math.pi*self.fsk_deviation/8.0))
+
+    def get_decim(self):
+        return self.decim
+
+    def set_decim(self, decim):
+        self.decim = decim
 
     def get_center(self):
         return self.center

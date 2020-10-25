@@ -38,6 +38,8 @@ Go to [gr-webserver](https://github.com/duggabe/gr-webserver) and follow the ins
 
 ### RTTY transmitter
 
+There are two programs to transmit RTTY: one for audio output `(RTTY_vco)`, and one for direct USRP output `(RTTY_xmt)`. The instructions below are for `(RTTY_vco)`, the audio output version.
+
 1. Open a terminal window.
 2. Go to the gr-RTTY-basics/RTTY_xmt folder.  
 ```
