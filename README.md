@@ -38,7 +38,13 @@ Go to [gr-webserver](https://github.com/duggabe/gr-webserver) and follow the ins
 
 ### RTTY transmitter
 
-There are two programs to transmit RTTY: one for audio output `(RTTY_vco)`, and one for direct USRP output `(RTTY_xmt)`. The instructions below are for `(RTTY_vco)`, the audio output version.
+There are three programs to transmit RTTY:
+
+* one for audio output - `RTTY_vco`
+* one for direct USRP output - `RTTY_xmt`
+* one for sending continuous LTRS characters for tuning - `RTTY_test_ltrs`.
+
+The instructions below are for `RTTY_vco`, the audio output version, but they all operate in the same manner.
 
 1. Open a terminal window.
 2. Go to the gr-RTTY-basics/RTTY_xmt folder.  
@@ -72,5 +78,5 @@ gnuradio-companion
 
 ### Loop-back test
 
-If you connect the audio output of the transmitter to the audio input of the receiver using a patch cable, you can perform a loop-back test. Whatever you type in the gr-webserver screen will be displayed as received, preceeded by a less-than sign, in all capital letters. There will be a delay in the response.
+Using `RTTY_vco`, if you connect the audio output of the transmitter to the audio input of the receiver using a patch cable, you can perform a loop-back test. Whatever you type in the gr-webserver screen will be displayed as received, preceeded by a less-than sign, in all capital letters. There will be a delay in the response.
 
