@@ -23,6 +23,7 @@ options:
     sizing_mode: fixed
     thread_safe_setters: ''
     title: RTTY_xmt
+    window_size: (1000,1000)
   states:
     bus_sink: false
     bus_source: false
@@ -68,7 +69,7 @@ blocks:
     start: 144.0e6
     step: 1.0e3
     stop: 148.0e6
-    value: 144.95e6
+    value: 144.92e6
     widget: counter_slider
   states:
     bus_sink: false
@@ -88,7 +89,7 @@ blocks:
     samp_rate: usrp_rate
     type: complex_band_pass
     width: '2000'
-    win: firdes.WIN_HAMMING
+    win: window.WIN_HAMMING
   states:
     bus_sink: false
     bus_source: false
@@ -129,7 +130,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [192, 76.0]
+    coordinate: [184, 76.0]
     rotation: 0
     state: true
 - name: rf_decim
@@ -169,24 +170,24 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: '50000'
+    value: '48000'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [192, 12.0]
+    coordinate: [184, 12.0]
     rotation: 0
     state: enabled
 - name: usrp_rate
   id: variable
   parameters:
     comment: ''
-    value: '1000000'
+    value: '768000'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [192, 140.0]
+    coordinate: [184, 140.0]
     rotation: 0
     state: true
 - name: vco_max
@@ -228,7 +229,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [592, 348.0]
+    coordinate: [392, 348.0]
     rotation: 0
     state: true
 - name: blocks_multiply_const_vxx_0
@@ -246,7 +247,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [424, 348.0]
+    coordinate: [232, 348.0]
     rotation: 0
     state: true
 - name: blocks_repeat_0
@@ -272,7 +273,7 @@ blocks:
   parameters:
     affinity: ''
     alias: ''
-    comment: output samp rate = 1M
+    comment: output samp rate = 768k
     interp: (int)(usrp_rate/samp_rate)
     maxoutbuf: '0'
     minoutbuf: '0'
@@ -282,7 +283,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [936, 348.0]
+    coordinate: [736, 348.0]
     rotation: 0
     state: true
 - name: blocks_uchar_to_float_0
@@ -297,7 +298,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [744, 216.0]
+    coordinate: [768, 216.0]
     rotation: 0
     state: enabled
 - name: blocks_vco_c_0
@@ -315,7 +316,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [752, 332.0]
+    coordinate: [552, 332.0]
     rotation: 0
     state: true
 - name: epy_block_0_0
@@ -406,31 +407,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1096, 332.0]
-    rotation: 0
-    state: true
-- name: low_pass_filter_0
-  id: low_pass_filter
-  parameters:
-    affinity: ''
-    alias: ''
-    beta: '6.76'
-    comment: ''
-    cutoff_freq: '200'
-    decim: '1'
-    gain: '1'
-    interp: '1'
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    samp_rate: samp_rate
-    type: fir_filter_fff
-    width: '1000'
-    win: firdes.WIN_HAMMING
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [224, 300.0]
+    coordinate: [904, 332.0]
     rotation: 0
     state: true
 - name: qtgui_time_sink_x_0
@@ -527,7 +504,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [424, 420.0]
+    coordinate: [168, 444.0]
     rotation: 0
     state: enabled
 - name: uhd_usrp_sink_0
@@ -787,6 +764,7 @@ blocks:
     sd_spec6: ''
     sd_spec7: ''
     show_lo_controls: 'False'
+    start_time: '-1.0'
     stream_args: ''
     stream_chans: '[]'
     sync: sync
@@ -803,7 +781,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1144, 156.0]
+    coordinate: [1120, 292.0]
     rotation: 0
     state: true
 - name: virtual_sink_0
@@ -816,7 +794,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [912, 212.0]
+    coordinate: [936, 212.0]
     rotation: 0
     state: true
 - name: virtual_source_0
@@ -860,9 +838,8 @@ connections:
 - [blocks_vco_c_0, '0', blocks_repeat_0_0, '0']
 - [epy_block_0_0, '0', blocks_repeat_0, '0']
 - [fft_filter_xxx_0, '0', uhd_usrp_sink_0, '0']
-- [low_pass_filter_0, '0', blocks_multiply_const_vxx_0, '0']
-- [low_pass_filter_0, '0', qtgui_time_sink_x_0, '0']
-- [virtual_source_0, '0', low_pass_filter_0, '0']
+- [virtual_source_0, '0', blocks_multiply_const_vxx_0, '0']
+- [virtual_source_0, '0', qtgui_time_sink_x_0, '0']
 - [zeromq_pull_msg_source_0, out, epy_block_0_0, msg_in]
 
 metadata:

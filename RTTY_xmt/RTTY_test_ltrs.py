@@ -8,9 +8,9 @@
 # Title: RTTY_test_ltrs
 # Author: Barry Duggan
 # Description: RTTY_test_ltrs
-# GNU Radio version: 3.9.0.0-git
+# GNU Radio version: 3.10.0.0-rc4
 
-from distutils.version import StrictVersion
+from packaging.version import Version as StrictVersion
 
 if __name__ == '__main__':
     import ctypes
@@ -29,6 +29,7 @@ import sip
 from gnuradio import blocks
 from gnuradio import filter
 from gnuradio import gr
+from gnuradio.fft import window
 import sys
 import signal
 from argparse import ArgumentParser
@@ -38,6 +39,8 @@ from gnuradio import uhd
 import time
 from gnuradio.qtgui import Range, RangeWidget
 from PyQt5 import QtCore
+
+
 
 from gnuradio import qtgui
 
@@ -81,24 +84,24 @@ class RTTY_test_ltrs(gr.top_block, Qt.QWidget):
         self.fsk_deviation = fsk_deviation = 170
         self.center = center = 2210
         self.vco_offset = vco_offset = (center-(fsk_deviation/2))/vco_max
-        self.usrp_rate = usrp_rate = 1000000
-        self.samp_rate = samp_rate = 50000
+        self.usrp_rate = usrp_rate = 768000
+        self.samp_rate = samp_rate = 48000
         self.rf_gain = rf_gain = 1
         self.repeat = repeat = (int)(samp_rate*0.022)
         self.inp_amp = inp_amp = ((center+(fsk_deviation/2))/vco_max)-vco_offset
-        self.channel_filter = channel_filter = firdes.complex_band_pass(1.0, usrp_rate, -3000, 3000, 2000, firdes.WIN_HAMMING, 6.76)
-        self.center_freq = center_freq = 144.95e6
+        self.channel_filter = channel_filter = firdes.complex_band_pass(1.0, usrp_rate, -3000, 3000, 2000, window.WIN_HAMMING, 6.76)
+        self.center_freq = center_freq = 144.92e6
         self.baud = baud = 1/0.022
 
         ##################################################
         # Blocks
         ##################################################
         self._rf_gain_range = Range(0, 76, 1, 1, 200)
-        self._rf_gain_win = RangeWidget(self._rf_gain_range, self.set_rf_gain, 'RF Gain', "counter_slider", int, QtCore.Qt.Horizontal)
-        self.top_grid_layout.addWidget(self._rf_gain_win)
-        self._center_freq_range = Range(144.0e6, 148.0e6, 1.0e3, 144.95e6, 200)
-        self._center_freq_win = RangeWidget(self._center_freq_range, self.set_center_freq, 'Tuning', "counter_slider", float, QtCore.Qt.Horizontal)
-        self.top_grid_layout.addWidget(self._center_freq_win)
+        self._rf_gain_win = RangeWidget(self._rf_gain_range, self.set_rf_gain, "RF Gain", "counter_slider", int, QtCore.Qt.Horizontal)
+        self.top_layout.addWidget(self._rf_gain_win)
+        self._center_freq_range = Range(144.0e6, 148.0e6, 1.0e3, 144.92e6, 200)
+        self._center_freq_win = RangeWidget(self._center_freq_range, self.set_center_freq, "Tuning", "counter_slider", float, QtCore.Qt.Horizontal)
+        self.top_layout.addWidget(self._center_freq_win)
         self.uhd_usrp_sink_0 = uhd.usrp_sink(
             ",".join(("", "")),
             uhd.stream_args(
@@ -116,7 +119,7 @@ class RTTY_test_ltrs(gr.top_block, Qt.QWidget):
         self.uhd_usrp_sink_0.set_bandwidth(200000, 0)
         self.uhd_usrp_sink_0.set_gain(rf_gain, 0)
         self.qtgui_time_sink_x_0 = qtgui.time_sink_f(
-            4096, #size
+            8192, #size
             samp_rate, #samp_rate
             "", #name
             1, #number of inputs
@@ -161,17 +164,8 @@ class RTTY_test_ltrs(gr.top_block, Qt.QWidget):
             self.qtgui_time_sink_x_0.set_line_marker(i, markers[i])
             self.qtgui_time_sink_x_0.set_line_alpha(i, alphas[i])
 
-        self._qtgui_time_sink_x_0_win = sip.wrapinstance(self.qtgui_time_sink_x_0.pyqwidget(), Qt.QWidget)
-        self.top_grid_layout.addWidget(self._qtgui_time_sink_x_0_win)
-        self.low_pass_filter_0 = filter.fir_filter_fff(
-            1,
-            firdes.low_pass(
-                1,
-                samp_rate,
-                200,
-                1000,
-                firdes.WIN_HAMMING,
-                6.76))
+        self._qtgui_time_sink_x_0_win = sip.wrapinstance(self.qtgui_time_sink_x_0.qwidget(), Qt.QWidget)
+        self.top_layout.addWidget(self._qtgui_time_sink_x_0_win)
         self.fft_filter_xxx_0 = filter.fft_filter_ccc(1, channel_filter, 1)
         self.fft_filter_xxx_0.declare_sample_delay(0)
         self.blocks_vector_source_x_0 = blocks.vector_source_b((0, 1, 1, 1, 1, 1, 1, 1), True, 1, [])
@@ -183,7 +177,6 @@ class RTTY_test_ltrs(gr.top_block, Qt.QWidget):
         self.blocks_add_const_vxx_0 = blocks.add_const_ff(vco_offset)
 
 
-
         ##################################################
         # Connections
         ##################################################
@@ -191,17 +184,19 @@ class RTTY_test_ltrs(gr.top_block, Qt.QWidget):
         self.connect((self.blocks_multiply_const_vxx_0, 0), (self.blocks_add_const_vxx_0, 0))
         self.connect((self.blocks_repeat_0, 0), (self.blocks_uchar_to_float_0, 0))
         self.connect((self.blocks_repeat_0_0, 0), (self.fft_filter_xxx_0, 0))
-        self.connect((self.blocks_uchar_to_float_0, 0), (self.low_pass_filter_0, 0))
+        self.connect((self.blocks_uchar_to_float_0, 0), (self.blocks_multiply_const_vxx_0, 0))
+        self.connect((self.blocks_uchar_to_float_0, 0), (self.qtgui_time_sink_x_0, 0))
         self.connect((self.blocks_vco_c_0, 0), (self.blocks_repeat_0_0, 0))
         self.connect((self.blocks_vector_source_x_0, 0), (self.blocks_repeat_0, 0))
         self.connect((self.fft_filter_xxx_0, 0), (self.uhd_usrp_sink_0, 0))
-        self.connect((self.low_pass_filter_0, 0), (self.blocks_multiply_const_vxx_0, 0))
-        self.connect((self.low_pass_filter_0, 0), (self.qtgui_time_sink_x_0, 0))
 
 
     def closeEvent(self, event):
         self.settings = Qt.QSettings("GNU Radio", "RTTY_test_ltrs")
         self.settings.setValue("geometry", self.saveGeometry())
+        self.stop()
+        self.wait()
+
         event.accept()
 
     def get_vco_max(self):
@@ -241,6 +236,7 @@ class RTTY_test_ltrs(gr.top_block, Qt.QWidget):
 
     def set_usrp_rate(self, usrp_rate):
         self.usrp_rate = usrp_rate
+        self.set_channel_filter(firdes.complex_band_pass(1.0, self.usrp_rate, -3000, 3000, 2000, window.WIN_HAMMING, 6.76))
         self.blocks_repeat_0_0.set_interpolation((int)(self.usrp_rate/self.samp_rate))
         self.uhd_usrp_sink_0.set_samp_rate(self.usrp_rate)
 
@@ -251,7 +247,6 @@ class RTTY_test_ltrs(gr.top_block, Qt.QWidget):
         self.samp_rate = samp_rate
         self.set_repeat((int)(self.samp_rate*0.022))
         self.blocks_repeat_0_0.set_interpolation((int)(self.usrp_rate/self.samp_rate))
-        self.low_pass_filter_0.set_taps(firdes.low_pass(1, self.samp_rate, 200, 1000, firdes.WIN_HAMMING, 6.76))
         self.qtgui_time_sink_x_0.set_samp_rate(self.samp_rate)
 
     def get_rf_gain(self):
@@ -298,7 +293,6 @@ class RTTY_test_ltrs(gr.top_block, Qt.QWidget):
 
 
 
-
 def main(top_block_cls=RTTY_test_ltrs, options=None):
 
     if StrictVersion("4.5.0") <= StrictVersion(Qt.qVersion()) < StrictVersion("5.0.0"):
@@ -313,6 +307,9 @@ def main(top_block_cls=RTTY_test_ltrs, options=None):
     tb.show()
 
     def sig_handler(sig=None, frame=None):
+        tb.stop()
+        tb.wait()
+
         Qt.QApplication.quit()
 
     signal.signal(signal.SIGINT, sig_handler)
@@ -322,11 +319,6 @@ def main(top_block_cls=RTTY_test_ltrs, options=None):
     timer.start(500)
     timer.timeout.connect(lambda: None)
 
-    def quitting():
-        tb.stop()
-        tb.wait()
-
-    qapp.aboutToQuit.connect(quitting)
     qapp.exec_()
 
 if __name__ == '__main__':

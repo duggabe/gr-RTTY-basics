@@ -8,9 +8,9 @@
 # Title: RTTY_vco
 # Author: Barry Duggan
 # Description: RTTY transmitter
-# GNU Radio version: 3.9.0.0-git
+# GNU Radio version: 3.10.0.0-rc4
 
-from distutils.version import StrictVersion
+from packaging.version import Version as StrictVersion
 
 if __name__ == '__main__':
     import ctypes
@@ -30,13 +30,16 @@ from gnuradio import audio
 from gnuradio import blocks
 from gnuradio import filter
 from gnuradio import gr
+from gnuradio.fft import window
 import sys
 import signal
 from argparse import ArgumentParser
 from gnuradio.eng_arg import eng_float, intx
 from gnuradio import eng_notation
 from gnuradio import zeromq
-import epy_block_0_0
+import RTTY_vco_epy_block_0_0 as epy_block_0_0  # embedded python block
+
+
 
 from gnuradio import qtgui
 
@@ -135,16 +138,16 @@ class RTTY_vco(gr.top_block, Qt.QWidget):
             self.qtgui_time_sink_x_0.set_line_marker(i, markers[i])
             self.qtgui_time_sink_x_0.set_line_alpha(i, alphas[i])
 
-        self._qtgui_time_sink_x_0_win = sip.wrapinstance(self.qtgui_time_sink_x_0.pyqwidget(), Qt.QWidget)
-        self.top_grid_layout.addWidget(self._qtgui_time_sink_x_0_win)
+        self._qtgui_time_sink_x_0_win = sip.wrapinstance(self.qtgui_time_sink_x_0.qwidget(), Qt.QWidget)
+        self.top_layout.addWidget(self._qtgui_time_sink_x_0_win)
         self.low_pass_filter_0 = filter.fir_filter_fff(
             1,
             firdes.low_pass(
                 1,
                 samp_rate,
-                200,
+                4000,
                 1000,
-                firdes.WIN_HAMMING,
+                window.WIN_HAMMING,
                 6.76))
         self.epy_block_0_0 = epy_block_0_0.mc_sync_block()
         self.blocks_vco_f_0 = blocks.vco_f(samp_rate, 15708, 0.5)
@@ -155,7 +158,6 @@ class RTTY_vco(gr.top_block, Qt.QWidget):
         self.audio_sink_0 = audio.sink(48000, '', True)
 
 
-
         ##################################################
         # Connections
         ##################################################
@@ -163,17 +165,20 @@ class RTTY_vco(gr.top_block, Qt.QWidget):
         self.connect((self.blocks_add_const_vxx_0, 0), (self.blocks_vco_f_0, 0))
         self.connect((self.blocks_multiply_const_vxx_0, 0), (self.blocks_add_const_vxx_0, 0))
         self.connect((self.blocks_repeat_0, 0), (self.blocks_uchar_to_float_0, 0))
-        self.connect((self.blocks_uchar_to_float_0, 0), (self.low_pass_filter_0, 0))
-        self.connect((self.blocks_vco_f_0, 0), (self.audio_sink_0, 0))
-        self.connect((self.blocks_vco_f_0, 0), (self.qtgui_time_sink_x_0, 1))
+        self.connect((self.blocks_uchar_to_float_0, 0), (self.blocks_multiply_const_vxx_0, 0))
+        self.connect((self.blocks_uchar_to_float_0, 0), (self.qtgui_time_sink_x_0, 0))
+        self.connect((self.blocks_vco_f_0, 0), (self.low_pass_filter_0, 0))
         self.connect((self.epy_block_0_0, 0), (self.blocks_repeat_0, 0))
-        self.connect((self.low_pass_filter_0, 0), (self.blocks_multiply_const_vxx_0, 0))
-        self.connect((self.low_pass_filter_0, 0), (self.qtgui_time_sink_x_0, 0))
+        self.connect((self.low_pass_filter_0, 0), (self.audio_sink_0, 0))
+        self.connect((self.low_pass_filter_0, 0), (self.qtgui_time_sink_x_0, 1))
 
 
     def closeEvent(self, event):
         self.settings = Qt.QSettings("GNU Radio", "RTTY_vco")
         self.settings.setValue("geometry", self.saveGeometry())
+        self.stop()
+        self.wait()
+
         event.accept()
 
     def get_vco_max(self):
@@ -214,7 +219,7 @@ class RTTY_vco(gr.top_block, Qt.QWidget):
     def set_samp_rate(self, samp_rate):
         self.samp_rate = samp_rate
         self.set_repeat((int)(self.samp_rate*0.022))
-        self.low_pass_filter_0.set_taps(firdes.low_pass(1, self.samp_rate, 200, 1000, firdes.WIN_HAMMING, 6.76))
+        self.low_pass_filter_0.set_taps(firdes.low_pass(1, self.samp_rate, 4000, 1000, window.WIN_HAMMING, 6.76))
         self.qtgui_time_sink_x_0.set_samp_rate(self.samp_rate)
 
     def get_repeat(self):
@@ -240,7 +245,6 @@ class RTTY_vco(gr.top_block, Qt.QWidget):
 
 
 
-
 def main(top_block_cls=RTTY_vco, options=None):
 
     if StrictVersion("4.5.0") <= StrictVersion(Qt.qVersion()) < StrictVersion("5.0.0"):
@@ -255,6 +259,9 @@ def main(top_block_cls=RTTY_vco, options=None):
     tb.show()
 
     def sig_handler(sig=None, frame=None):
+        tb.stop()
+        tb.wait()
+
         Qt.QApplication.quit()
 
     signal.signal(signal.SIGINT, sig_handler)
@@ -264,11 +271,6 @@ def main(top_block_cls=RTTY_vco, options=None):
     timer.start(500)
     timer.timeout.connect(lambda: None)
 
-    def quitting():
-        tb.stop()
-        tb.wait()
-
-    qapp.aboutToQuit.connect(quitting)
     qapp.exec_()
 
 if __name__ == '__main__':
