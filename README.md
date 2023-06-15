@@ -36,7 +36,7 @@ git clone https://github.com/duggabe/gr-RTTY-basics.git
 
 ### gr-webserver
 
-Go to [gr-webserver](https://github.com/duggabe/gr-webserver) and follow the instructions to install and start it using a separate terminal screen.
+Go to [gr-webserver](https://github.com/duggabe/gr-webserver) and follow the instructions to install and start it using a separate terminal screen. **Note:** Version v1.0.16.0 is needed to work with this program.
 
 ## Operation
 
