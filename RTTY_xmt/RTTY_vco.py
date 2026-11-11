@@ -91,7 +91,7 @@ class RTTY_vco(gr.top_block, Qt.QWidget):
         ##################################################
         # Blocks
         ##################################################
-        self.zeromq_pull_msg_source_0 = zeromq.pull_msg_source('tcp://127.0.0.1:50251', 100, False)
+        self.zeromq_sub_msg_source_0 = zeromq.sub_msg_source('tcp://127.0.0.1:50251', 100, False)
         self.qtgui_time_sink_x_0 = qtgui.time_sink_f(
             4096, #size
             samp_rate, #samp_rate
@@ -161,7 +161,7 @@ class RTTY_vco(gr.top_block, Qt.QWidget):
         ##################################################
         # Connections
         ##################################################
-        self.msg_connect((self.zeromq_pull_msg_source_0, 'out'), (self.epy_block_0_0, 'msg_in'))
+        self.msg_connect((self.zeromq_sub_msg_source_0, 'out'), (self.epy_block_0_0, 'msg_in'))
         self.connect((self.blocks_add_const_vxx_0, 0), (self.blocks_vco_f_0, 0))
         self.connect((self.blocks_multiply_const_vxx_0, 0), (self.blocks_add_const_vxx_0, 0))
         self.connect((self.blocks_repeat_0, 0), (self.blocks_uchar_to_float_0, 0))

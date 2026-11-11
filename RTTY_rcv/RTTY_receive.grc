@@ -608,8 +608,8 @@ blocks:
     coordinate: [48, 484.0]
     rotation: 0
     state: true
-- name: zeromq_push_msg_sink_0
-  id: zeromq_push_msg_sink
+- name: zeromq_pub_msg_sink_0
+  id: zeromq_pub_msg_sink
   parameters:
     address: tcp://127.0.0.1:50252
     affinity: ''
@@ -633,7 +633,7 @@ connections:
 - [blocks_multiply_const_vxx_0, '0', virtual_sink_0, '0']
 - [digital_binary_slicer_fb_0, '0', blocks_char_to_float_0, '0']
 - [digital_binary_slicer_fb_0, '0', epy_block_0, '0']
-- [epy_block_0, msg_out, zeromq_push_msg_sink_0, in]
+- [epy_block_0, msg_out, zeromq_pub_msg_sink_0, in]
 - [freq_xlating_fir_filter_xxx_0, '0', analog_simple_squelch_cc_0, '0']
 - [rational_resampler_xxx_0_0, '0', blocks_multiply_const_vxx_0, '0']
 - [rational_resampler_xxx_0_0, '0', qtgui_eye_sink_x_0, '0']

@@ -105,7 +105,7 @@ class RTTY_xmt(gr.top_block, Qt.QWidget):
         self._center_freq_range = Range(144.0e6, 148.0e6, 1.0e3, 144.92e6, 200)
         self._center_freq_win = RangeWidget(self._center_freq_range, self.set_center_freq, "Tuning", "counter_slider", float, QtCore.Qt.Horizontal)
         self.top_layout.addWidget(self._center_freq_win)
-        self.zeromq_pull_msg_source_0 = zeromq.pull_msg_source('tcp://127.0.0.1:50251', 100, False)
+        self.zeromq_sub_msg_source_0 = zeromq.sub_msg_source('tcp://127.0.0.1:50251', 100, False)
         self.uhd_usrp_sink_0 = uhd.usrp_sink(
             ",".join(("", "")),
             uhd.stream_args(
@@ -184,7 +184,7 @@ class RTTY_xmt(gr.top_block, Qt.QWidget):
         ##################################################
         # Connections
         ##################################################
-        self.msg_connect((self.zeromq_pull_msg_source_0, 'out'), (self.epy_block_0_0, 'msg_in'))
+        self.msg_connect((self.zeromq_sub_msg_source_0, 'out'), (self.epy_block_0_0, 'msg_in'))
         self.connect((self.blocks_add_const_vxx_0, 0), (self.blocks_vco_c_0, 0))
         self.connect((self.blocks_multiply_const_vxx_0, 0), (self.blocks_add_const_vxx_0, 0))
         self.connect((self.blocks_repeat_0, 0), (self.blocks_uchar_to_float_0, 0))

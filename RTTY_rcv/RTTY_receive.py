@@ -110,7 +110,7 @@ class RTTY_receive(gr.top_block, Qt.QWidget):
         self._reverse_button_group.buttonClicked[int].connect(
             lambda i: self.set_reverse(self._reverse_options[i]))
         self.top_layout.addWidget(self._reverse_group_box)
-        self.zeromq_push_msg_sink_0 = zeromq.push_msg_sink('tcp://127.0.0.1:50252', 100, True)
+        self.zeromq_pub_msg_sink_0 = zeromq.pub_msg_sink('tcp://127.0.0.1:50252', 100, True)
         self.rational_resampler_xxx_0_0 = filter.rational_resampler_fff(
                 interpolation=500,
                 decimation=960,
@@ -224,7 +224,7 @@ class RTTY_receive(gr.top_block, Qt.QWidget):
         ##################################################
         # Connections
         ##################################################
-        self.msg_connect((self.epy_block_0, 'msg_out'), (self.zeromq_push_msg_sink_0, 'in'))
+        self.msg_connect((self.epy_block_0, 'msg_out'), (self.zeromq_pub_msg_sink_0, 'in'))
         self.connect((self.analog_quadrature_demod_cf_0, 0), (self.rational_resampler_xxx_0_0, 0))
         self.connect((self.analog_simple_squelch_cc_0, 0), (self.analog_quadrature_demod_cf_0, 0))
         self.connect((self.audio_source_0, 0), (self.freq_xlating_fir_filter_xxx_0, 0))

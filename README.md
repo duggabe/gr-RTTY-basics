@@ -36,7 +36,7 @@ git clone https://github.com/duggabe/gr-RTTY-basics.git
 
 ### gr-webserver
 
-Go to [gr-webserver](https://github.com/duggabe/gr-webserver) and follow the instructions to install and start it using a separate terminal screen. **Note:** Version v1.0.16.0 is needed to work with this program.
+Go to [gr-webserver](https://github.com/duggabe/gr-webserver) and follow the instructions to install and start it using a separate terminal screen. **Note:** Use the current version (v2.1 or later, the `master` branch). The flowgraphs use ZMQ SUB Message Source and ZMQ PUB Message Sink blocks to match it. Version v1.0.16.0 used PUSH/PULL sockets, so it will not work with these flowgraphs, and it needs zeromq 5, which may not install on current Node.js versions.
 
 ## Operation
 

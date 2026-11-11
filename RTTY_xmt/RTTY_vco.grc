@@ -425,8 +425,8 @@ blocks:
     coordinate: [1056, 156.0]
     rotation: 0
     state: enabled
-- name: zeromq_pull_msg_source_0
-  id: zeromq_pull_msg_source
+- name: zeromq_sub_msg_source_0
+  id: zeromq_sub_msg_source
   parameters:
     address: tcp://127.0.0.1:50251
     affinity: ''
@@ -454,7 +454,7 @@ connections:
 - [epy_block_0_0, '0', blocks_repeat_0, '0']
 - [low_pass_filter_0, '0', audio_sink_0, '0']
 - [low_pass_filter_0, '0', qtgui_time_sink_x_0, '1']
-- [zeromq_pull_msg_source_0, out, epy_block_0_0, msg_in]
+- [zeromq_sub_msg_source_0, out, epy_block_0_0, msg_in]
 
 metadata:
   file_format: 1

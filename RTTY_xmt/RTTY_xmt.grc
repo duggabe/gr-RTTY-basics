@@ -810,8 +810,8 @@ blocks:
     coordinate: [24, 348.0]
     rotation: 0
     state: true
-- name: zeromq_pull_msg_source_0
-  id: zeromq_pull_msg_source
+- name: zeromq_sub_msg_source_0
+  id: zeromq_sub_msg_source
   parameters:
     address: tcp://127.0.0.1:50251
     affinity: ''
@@ -840,7 +840,7 @@ connections:
 - [fft_filter_xxx_0, '0', uhd_usrp_sink_0, '0']
 - [virtual_source_0, '0', blocks_multiply_const_vxx_0, '0']
 - [virtual_source_0, '0', qtgui_time_sink_x_0, '0']
-- [zeromq_pull_msg_source_0, out, epy_block_0_0, msg_in]
+- [zeromq_sub_msg_source_0, out, epy_block_0_0, msg_in]
 
 metadata:
   file_format: 1
