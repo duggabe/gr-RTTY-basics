@@ -92,3 +92,16 @@ Using `RTTY_vco`, if you connect the audio output of the transmitter to the audi
 
 If you connect the audio output of the computer to the audio input of the receiver using a patch cable, you can go to http://internet-tty.net:8000/ITTY and start the input. You must select the 'Reverse' tones. A RTTY news feed will be displayed.
 
+
+## Troubleshooting
+
+gr-webserver publishes keyboard text on port 50251. The transmitter's ZMQ SUB Message Source connects to it. The receiver's ZMQ PUB Message Sink binds port 50252, and gr-webserver connects to it to get the text it displays.
+
+If received text doesn't appear on the gr-webserver screen, open `http://localhost:50250/trace` in another browser tab. The current gr-webserver (`master`) logs a timestamped line there, and in its terminal, each time that connection changes:
+
+```
+13:06:37 zmq SUB connected to flowgraph
+13:20:12 zmq SUB disconnected (flowgraph stopped?)
+```
+
+If `RTTY_receive` is running but the last line is `disconnected`, with no `connected` after it, restart gr-webserver: press Ctrl-C in its terminal, then run `node index.js` again. This happened once with Node.js 24 and zeromq 6.8; the cause is not known.
