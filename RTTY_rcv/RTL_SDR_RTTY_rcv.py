@@ -76,26 +76,18 @@ class RTL_SDR_RTTY_rcv(gr.top_block, Qt.QWidget):
         self.rtl_rate = rtl_rate = 1.92e6
         self.sps = sps = 11
         self.rf_decim = rf_decim = 2
-        self.rfGain = rfGain = 0
         self.reverse = reverse = 1
         self.quadGain = quadGain = 0.2
         self.fsk_deviation = fsk_deviation = 170
         self.freq = freq = 14.120e6
         self.decim = decim = (int)(rtl_rate/samp_rate)
-        self.center = center = 2210
+        self.center = center = -2210
         self.baud = baud = 1/0.022
 
         ##################################################
         # Blocks
         ##################################################
 
-        self._rfGain_range = qtgui.Range(0, 50, 1, 0, 200)
-        self._rfGain_win = qtgui.RangeWidget(self._rfGain_range, self.set_rfGain, "RF Gain (db)", "counter_slider", float, QtCore.Qt.Horizontal)
-        self.top_grid_layout.addWidget(self._rfGain_win, 1, 0, 1, 3)
-        for r in range(1, 2):
-            self.top_grid_layout.setRowStretch(r, 1)
-        for c in range(0, 3):
-            self.top_grid_layout.setColumnStretch(c, 1)
         # Create the options list
         self._reverse_options = [1, -1]
         # Create the labels list
@@ -103,7 +95,7 @@ class RTL_SDR_RTTY_rcv(gr.top_block, Qt.QWidget):
         # Create the combo box
         # Create the radio buttons
         self._reverse_group_box = Qt.QGroupBox("'reverse'" + ": ")
-        self._reverse_box = Qt.QVBoxLayout()
+        self._reverse_box = Qt.QHBoxLayout()
         class variable_chooser_button_group(Qt.QButtonGroup):
             def __init__(self, parent=None):
                 Qt.QButtonGroup.__init__(self, parent)
@@ -139,6 +131,13 @@ class RTL_SDR_RTTY_rcv(gr.top_block, Qt.QWidget):
             self.top_grid_layout.setRowStretch(r, 1)
         for c in range(0, 2):
             self.top_grid_layout.setColumnStretch(c, 1)
+        self._center_range = qtgui.Range(-4000, 4000, 10, -2210, 200)
+        self._center_win = qtgui.RangeWidget(self._center_range, self.set_center, "Center freq", "counter_slider", float, QtCore.Qt.Horizontal)
+        self.top_grid_layout.addWidget(self._center_win, 1, 0, 1, 3)
+        for r in range(1, 2):
+            self.top_grid_layout.setRowStretch(r, 1)
+        for c in range(0, 3):
+            self.top_grid_layout.setColumnStretch(c, 1)
         self.soapy_rtlsdr_source_0 = None
         dev = 'driver=rtlsdr'
         stream_args = 'bufflen=16384'
@@ -171,9 +170,9 @@ class RTL_SDR_RTTY_rcv(gr.top_block, Qt.QWidget):
         self.soapy_rtlsdr_source_0.set_frequency(0, freq)
         self.soapy_rtlsdr_source_0.set_frequency_correction(0, 0)
         self.set_soapy_rtlsdr_source_0_bias(bool(False))
-        self._soapy_rtlsdr_source_0_gain_value = rfGain
+        self._soapy_rtlsdr_source_0_gain_value = 20
         self.set_soapy_rtlsdr_source_0_gain_mode(0, bool(False))
-        self.set_soapy_rtlsdr_source_0_gain(0, 'TUNER', rfGain)
+        self.set_soapy_rtlsdr_source_0_gain(0, 'TUNER', 20)
         self.rx_preview = qtgui.edit_box_msg(qtgui.STRING, '', 'RTTY RX', False, False, '', None)
         self._rx_preview_win = sip.wrapinstance(self.rx_preview.qwidget(), Qt.QWidget)
         self.top_grid_layout.addWidget(self._rx_preview_win, 4, 0, 1, 2)
@@ -193,14 +192,14 @@ class RTL_SDR_RTTY_rcv(gr.top_block, Qt.QWidget):
                 fractional_bw=0)
         self.rational_resampler_xxx_0 = filter.rational_resampler_ccc(
                 interpolation=1,
-                decimation=rf_decim,
+                decimation=8,
                 taps=[],
                 fractional_bw=0)
         self.qtgui_waterfall_sink_x_0 = qtgui.waterfall_sink_c(
-            1024, #size
+            512, #size
             window.WIN_BLACKMAN_hARRIS, #wintype
-            freq, #fc
-            (rtl_rate/(rf_decim*2)), #bw
+            0, #fc
+            6000, #bw
             "", #name
             1, #number of inputs
             None # parent
@@ -348,13 +347,13 @@ class RTL_SDR_RTTY_rcv(gr.top_block, Qt.QWidget):
         self.connect((self.blocks_multiply_const_vxx_0, 0), (self.qtgui_time_sink_x_0, 0))
         self.connect((self.digital_binary_slicer_fb_0, 0), (self.blocks_char_to_float_0, 0))
         self.connect((self.digital_binary_slicer_fb_0, 0), (self.epy_block_0, 0))
+        self.connect((self.freq_xlating_fir_filter_xxx_0, 0), (self.rational_resampler_xxx_0, 0))
         self.connect((self.freq_xlating_fir_filter_xxx_0, 0), (self.rational_resampler_xxx_1, 0))
         self.connect((self.rational_resampler_xxx_0, 0), (self.qtgui_waterfall_sink_x_0, 0))
         self.connect((self.rational_resampler_xxx_0_0, 0), (self.blocks_multiply_const_vxx_0, 0))
         self.connect((self.rational_resampler_xxx_0_0, 0), (self.qtgui_eye_sink_x_0, 0))
         self.connect((self.rational_resampler_xxx_1, 0), (self.analog_quadrature_demod_cf_0, 0))
         self.connect((self.soapy_rtlsdr_source_0, 0), (self.freq_xlating_fir_filter_xxx_0, 0))
-        self.connect((self.soapy_rtlsdr_source_0, 0), (self.rational_resampler_xxx_0, 0))
 
 
     def closeEvent(self, event):
@@ -379,7 +378,6 @@ class RTL_SDR_RTTY_rcv(gr.top_block, Qt.QWidget):
     def set_rtl_rate(self, rtl_rate):
         self.rtl_rate = rtl_rate
         self.set_decim((int)(self.rtl_rate/self.samp_rate))
-        self.qtgui_waterfall_sink_x_0.set_frequency_range(self.freq, (self.rtl_rate/(self.rf_decim*2)))
         self.soapy_rtlsdr_source_0.set_sample_rate(0, self.rtl_rate)
 
     def get_sps(self):
@@ -394,14 +392,6 @@ class RTL_SDR_RTTY_rcv(gr.top_block, Qt.QWidget):
 
     def set_rf_decim(self, rf_decim):
         self.rf_decim = rf_decim
-        self.qtgui_waterfall_sink_x_0.set_frequency_range(self.freq, (self.rtl_rate/(self.rf_decim*2)))
-
-    def get_rfGain(self):
-        return self.rfGain
-
-    def set_rfGain(self, rfGain):
-        self.rfGain = rfGain
-        self.set_soapy_rtlsdr_source_0_gain(0, 'TUNER', self.rfGain)
 
     def get_reverse(self):
         return self.reverse
@@ -430,7 +420,6 @@ class RTL_SDR_RTTY_rcv(gr.top_block, Qt.QWidget):
     def set_freq(self, freq):
         self.freq = freq
         Qt.QMetaObject.invokeMethod(self._freq_line_edit, "setText", Qt.Q_ARG("QString", eng_notation.num_to_str(self.freq)))
-        self.qtgui_waterfall_sink_x_0.set_frequency_range(self.freq, (self.rtl_rate/(self.rf_decim*2)))
         self.soapy_rtlsdr_source_0.set_frequency(0, self.freq)
 
     def get_decim(self):

@@ -42,15 +42,24 @@ blocks:
     rotation: 0
     state: enabled
 - name: center
-  id: variable
+  id: variable_qtgui_range
   parameters:
-    comment: ''
-    value: '2210'
+    comment: 1,0,1,3
+    gui_hint: 1,0,1,3
+    label: Center freq
+    min_len: '200'
+    orient: QtCore.Qt.Horizontal
+    rangeType: float
+    start: '-4000'
+    step: '10'
+    stop: '4000'
+    value: '-2210'
+    widget: counter_slider
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [376, 16.0]
+    coordinate: [696, 16.0]
     rotation: 0
     state: enabled
 - name: decim
@@ -78,7 +87,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [656, 16.0]
+    coordinate: [552, 16.0]
     rotation: 0
     state: true
 - name: fsk_deviation
@@ -90,7 +99,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [464, 16.0]
+    coordinate: [376, 16.0]
     rotation: 0
     state: enabled
 - name: quadGain
@@ -111,7 +120,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [920, 16.0]
+    coordinate: [840, 16.0]
     rotation: 0
     state: enabled
 - name: reverse
@@ -133,7 +142,7 @@ blocks:
     option3: '3'
     option4: '4'
     options: '[0, 1, 2]'
-    orient: Qt.QVBoxLayout
+    orient: Qt.QHBoxLayout
     type: int
     value: '1'
     widget: radio_buttons
@@ -141,28 +150,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1048, 20.0]
-    rotation: 0
-    state: enabled
-- name: rfGain
-  id: variable_qtgui_range
-  parameters:
-    comment: 1,0,1,3
-    gui_hint: 1,0,1,3
-    label: RF Gain (db)
-    min_len: '200'
-    orient: QtCore.Qt.Horizontal
-    rangeType: float
-    start: '0'
-    step: '1'
-    stop: '50'
-    value: '0'
-    widget: counter_slider
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [800, 16.0]
+    coordinate: [968, 20.0]
     rotation: 0
     state: enabled
 - name: rf_decim
@@ -210,7 +198,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [576, 16.0]
+    coordinate: [480, 16.0]
     rotation: 0
     state: true
 - name: analog_quadrature_demod_cf_0
@@ -345,10 +333,10 @@ blocks:
     minoutbuf: '0'
   states:
     _io_cache: ('Terminal Display Sink', 'my_sync_block', [], [('0', 'byte', 1)],
-      [('msg_out', 'message', 1)], "\nreads stream of 1's and 0's\nthere are 11 samples
-      for each bit time\nsynchronizes on start bit\nuses majority of samples in a
-      bit to determine validity\ncreates Baudot character\nconverts Baudot to UTF-8\ndisplays
-      characters on terminal screen\n", [])
+      [('msg_out', 'message', 1)], "\n\treads stream of 1's and 0's\n\tthere are 11
+      samples for each bit time\n\tsynchronizes on start bit\n\tuses majority of samples
+      in a bit to determine validity\n\tcreates Baudot character\n\tconverts Baudot
+      to UTF-8\n\tdisplays characters on terminal screen\n    ", [])
     bus_sink: false
     bus_source: false
     bus_structure: null
@@ -584,7 +572,7 @@ blocks:
     alpha8: '1.0'
     alpha9: '1.0'
     axislabels: 'True'
-    bw: rtl_rate/(rf_decim*2)
+    bw: '6000'
     color1: '0'
     color10: '0'
     color2: '0'
@@ -596,8 +584,8 @@ blocks:
     color8: '0'
     color9: '0'
     comment: 6,0,1,3
-    fc: freq
-    fftsize: '1024'
+    fc: '0'
+    fftsize: '512'
     freqhalf: 'True'
     grid: 'False'
     gui_hint: 6,0,1,3
@@ -626,16 +614,16 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [376, 408.0]
-    rotation: 0
+    coordinate: [72, 392.0]
+    rotation: 180
     state: true
 - name: rational_resampler_xxx_0
   id: rational_resampler_xxx
   parameters:
     affinity: ''
     alias: ''
-    comment: Output sample rate = 960kHz
-    decim: rf_decim
+    comment: Output sample rate = 6kHz
+    decim: '8'
     fbw: '0'
     interp: '1'
     maxoutbuf: '0'
@@ -646,8 +634,8 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [184, 376.0]
-    rotation: 0
+    coordinate: [296, 360.0]
+    rotation: 180
     state: true
 - name: rational_resampler_xxx_0_0
   id: rational_resampler_xxx
@@ -726,7 +714,7 @@ blocks:
     comment: ''
     dev_args: rtl=0,direct_samp=2
     freq_correction: '0'
-    gain: rfGain
+    gain: '20'
     maxoutbuf: '0'
     minoutbuf: '0'
     samp_rate: rtl_rate
@@ -772,13 +760,13 @@ connections:
 - [digital_binary_slicer_fb_0, '0', blocks_char_to_float_0, '0']
 - [digital_binary_slicer_fb_0, '0', epy_block_0, '0']
 - [epy_block_0, msg_out, rx_preview, val]
+- [freq_xlating_fir_filter_xxx_0, '0', rational_resampler_xxx_0, '0']
 - [freq_xlating_fir_filter_xxx_0, '0', rational_resampler_xxx_1, '0']
 - [rational_resampler_xxx_0, '0', qtgui_waterfall_sink_x_0, '0']
 - [rational_resampler_xxx_0_0, '0', blocks_multiply_const_vxx_0, '0']
 - [rational_resampler_xxx_0_0, '0', qtgui_eye_sink_x_0, '0']
 - [rational_resampler_xxx_1, '0', analog_quadrature_demod_cf_0, '0']
 - [soapy_rtlsdr_source_0, '0', freq_xlating_fir_filter_xxx_0, '0']
-- [soapy_rtlsdr_source_0, '0', rational_resampler_xxx_0, '0']
 - [virtual_source_0, '0', digital_binary_slicer_fb_0, '0']
 - [virtual_source_0, '0', qtgui_time_sink_x_0, '0']
 

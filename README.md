@@ -80,13 +80,63 @@ gnuradio-companion
 5. Click 'Run' and 'Execute' or press F6.
 6. A new window titled "RTTY_receive" will open showing a chooser block with 'Normal' and 'Reverse'. If the received signal has reversed Mark and Space tones, click the 'Reverse' button. A scope trace shows the received signal.
 
+### RTL-SDR RTTY receiver
+
+`RTL_SDR_RTTY_rcv` receives RTTY over the air with an RTL-SDR dongle instead of audio from a
+radio. It shows the decoded text in its own window, in a box labeled "RTTY RX", so it does
+not need gr-webserver.
+
+Requirements:
+
+* An RTL-SDR that can receive HF in direct-sampling mode. The flowgraph opens it with
+  `rtl=0,direct_samp=2` (Q branch), as used by the RTL-SDR Blog V3 and V4.
+* GNU Radio 3.10 with the Soapy blocks (`gr-soapy`) and the SoapyRTLSDR driver.
+
+To run it:
+
+1. Go to the gr-RTTY-basics/RTTY_rcv folder and start GNU Radio Companion.  
+```
+cd ~/gr-RTTY-basics/RTTY_rcv
+gnuradio-companion
+```
+2. Open RTL_SDR_RTTY_rcv.grc from the file menu.
+3. Click 'Run' and 'Execute' or press F6.
+4. In the "RTL_SDR_RTTY_rcv" window, enter the **Receive Freq** in Hz. The flowgraph
+   decodes the signal centered at Receive Freq plus the **Center freq** slider, which
+   starts at -2210 Hz. That is the same as an LSB receiver with 2125/2295 Hz tones, so
+   for an AFSK signal sent in LSB, enter the transmitting radio's dial frequency.
+   The waterfall shows 6 kHz around the decoded signal, centered on zero. Move the Center
+   freq slider (in 10 Hz steps) until the mark and space tones sit evenly either side of
+   zero.
+5. Adjust **Quad Demod** until the eye pattern is open and crosses at the zero axis.
+   The RTL-SDR gain is fixed at 20 dB in the flowgraph.
+6. Leave **Normal** selected for standard RTTY; an IC-7300 LSB-D signal from gr-icom7300
+   decodes on Normal. If the text is garbled, click **Reverse**.
+
+Decoded text appears in the "RTTY RX" box. A line is shown when a line feed arrives, or at
+the next space after 80 characters.
+
+The settings are 45.45 baud and 170 Hz shift. The signal is taken at 1.92 MS/s, shifted and
+reduced to 48 kS/s (shown on the waterfall at 6 kS/s), then 960 S/s. It is FM-demodulated
+and resampled to 500 S/s (11 samples per bit) for the decoder.
+
+**Caution:** to receive a transmitter on your own bench, even into a dummy load, put an
+attenuator (30 dB, for example) at the RTL-SDR input and use low transmit power. Never
+connect the RTL-SDR to a transmitter output.
+
 ### Testing
 
-There are two tests which can be done: Loop-back and online RTTY news.
+There are three tests which can be done: Loop-back, over-the-air, and online RTTY news.
 
 #### Loop-back test
 
 Using `RTTY_vco`, if you connect the audio output of the transmitter to the audio input of the receiver using a patch cable, you can perform a loop-back test. Whatever you type in the gr-webserver screen will be displayed as received, preceeded by a less-than sign, in all capital letters. There will be a delay in the response.
+
+#### Over-the-air test
+
+With `RTL_SDR_RTTY_rcv` you can decode a real RTTY signal, such as a contest station, the
+W1AW bulletins, or your own transmitter into a dummy load. It decoded RTTY sent from an
+Icom IC-7300MK2 in LSB-D with [gr-icom7300](https://github.com/duggabe/gr-icom7300).
 
 #### Online RTTY news
 
