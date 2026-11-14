@@ -1,0 +1,787 @@
+options:
+  parameters:
+    alias: ''
+    author: Barry Duggan
+    catch_exceptions: 'True'
+    comment: ''
+    copyright: ''
+    description: ''
+    gen_linking: dynamic
+    generate_options: qt_gui
+    generator_class_name: PythonQtGuiGenerator
+    generator_module: gnuradio.grc.workflows.python_qt_gui
+    hier_block_src_path: '.:'
+    id: RTL_SDR_RTTY_rcv
+    max_nouts: '0'
+    output_language: python
+    qt_qss_theme: ''
+    realtime_scheduling: ''
+    run: 'True'
+    run_command: '{python} -u {filename}'
+    thread_safe_setters: ''
+    title: RTL_SDR_RTTY_rcv
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [16, 12.0]
+    rotation: 0
+    state: enabled
+
+blocks:
+- name: baud
+  id: variable
+  parameters:
+    comment: ''
+    value: 1/0.022
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [280, 16.0]
+    rotation: 0
+    state: enabled
+- name: center
+  id: variable
+  parameters:
+    comment: ''
+    value: '2210'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [376, 16.0]
+    rotation: 0
+    state: enabled
+- name: decim
+  id: variable
+  parameters:
+    comment: ''
+    value: (int)(rtl_rate/samp_rate)
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [280, 88.0]
+    rotation: 0
+    state: true
+- name: freq
+  id: variable_qtgui_entry
+  parameters:
+    comment: 0,0,1,2
+    entry_signal: editingFinished
+    gui_hint: 0,0,1,2
+    label: Receive Freq
+    type: real
+    value: 14.120e6
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [656, 16.0]
+    rotation: 0
+    state: true
+- name: fsk_deviation
+  id: variable
+  parameters:
+    comment: ''
+    value: '170'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [464, 16.0]
+    rotation: 0
+    state: enabled
+- name: quadGain
+  id: variable_qtgui_range
+  parameters:
+    comment: 2,0,1,3
+    gui_hint: 2,0,1,3
+    label: Quad Demod
+    min_len: '200'
+    orient: QtCore.Qt.Horizontal
+    rangeType: float
+    start: '0'
+    step: '0.05'
+    stop: '1.0'
+    value: '0.2'
+    widget: counter_slider
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [920, 16.0]
+    rotation: 0
+    state: enabled
+- name: reverse
+  id: variable_qtgui_chooser
+  parameters:
+    comment: ''
+    gui_hint: ''
+    label: ''
+    label0: Normal
+    label1: Reverse
+    label2: ''
+    label3: ''
+    label4: ''
+    labels: '[]'
+    num_opts: '2'
+    option0: '1'
+    option1: '-1'
+    option2: '2'
+    option3: '3'
+    option4: '4'
+    options: '[0, 1, 2]'
+    orient: Qt.QVBoxLayout
+    type: int
+    value: '1'
+    widget: radio_buttons
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1048, 20.0]
+    rotation: 0
+    state: enabled
+- name: rfGain
+  id: variable_qtgui_range
+  parameters:
+    comment: 1,0,1,3
+    gui_hint: 1,0,1,3
+    label: RF Gain (db)
+    min_len: '200'
+    orient: QtCore.Qt.Horizontal
+    rangeType: float
+    start: '0'
+    step: '1'
+    stop: '50'
+    value: '0'
+    widget: counter_slider
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [800, 16.0]
+    rotation: 0
+    state: enabled
+- name: rf_decim
+  id: variable
+  parameters:
+    comment: ''
+    value: '2'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [360, 88.0]
+    rotation: 0
+    state: true
+- name: rtl_rate
+  id: variable
+  parameters:
+    comment: ''
+    value: 1.92e6
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [184, 88.0]
+    rotation: 0
+    state: enabled
+- name: samp_rate
+  id: variable
+  parameters:
+    comment: ''
+    value: '48000'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [184, 16.0]
+    rotation: 0
+    state: enabled
+- name: sps
+  id: variable
+  parameters:
+    comment: ''
+    value: '11'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [576, 16.0]
+    rotation: 0
+    state: true
+- name: analog_quadrature_demod_cf_0
+  id: analog_quadrature_demod_cf
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: sample rate 960 Hz
+    gain: quadGain
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [712, 248.0]
+    rotation: 0
+    state: true
+- name: blocks_char_to_float_0
+  id: blocks_char_to_float
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    scale: '1'
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [704, 536.0]
+    rotation: 0
+    state: enabled
+- name: blocks_multiply_const_vxx_0
+  id: blocks_multiply_const_vxx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: Normal/Reverse
+    const: reverse
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    type: float
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1096, 248.0]
+    rotation: 0
+    state: enabled
+- name: digital_binary_slicer_fb_0
+  id: digital_binary_slicer_fb
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [568, 616.0]
+    rotation: 0
+    state: enabled
+- name: epy_block_0
+  id: epy_block
+  parameters:
+    _source_code: "\"\"\"\nTerminal Display Sink\n\"\"\"\n\n#  epy_block_0.py\n# \
+      \ revised 07/07/2019\n\nimport numpy as np\nfrom gnuradio import gr\nimport\
+      \ pmt\n\nITA2 = [ '\\x00', 'E', '\\n', 'A', ' ', 'S', 'I', 'U', '\\r', 'D',\
+      \ 'R', 'J', 'N', 'F', 'C', 'K',\n            'T', 'Z', 'L', 'W', 'H', 'Y', 'P',\
+      \ 'Q', 'O', 'B', 'G', '\\x0e', 'M', 'X', 'V', '\\x0f',\n            '\\x00',\
+      \ '3', '\\n', '-', ' ', '\\x07', '8', '7', '\\r', '$', '4', '\\'', ',', '!',\
+      \ ':', '(',\n            '5', '\\\"', ')', '2', '#', '6', '0', '1', '9', '?',\
+      \ '&', '\\x0e', '.', '/', ';', '\\x0f' ]\n\n\n_samples = [ 11, 22, 33, 44, 55,\
+      \ 66, 77 ]\n_in_sync = 0\n_bit_count = 0\t# actually sample count from beginning\
+      \ of start bit\n_num_ones = 0\n_num_zeros = 0\n_byte = 0\t# this is the index\
+      \ into ITA2\n_in_bit = 0\n_shift = 0\noutLine = []\noutCount = 0\n\nclass my_sync_block(gr.sync_block):\n\
+      \    \"\"\"\n\treads stream of 1's and 0's\n\tthere are 11 samples for each\
+      \ bit time\n\tsynchronizes on start bit\n\tuses majority of samples in a bit\
+      \ to determine validity\n\tcreates Baudot character\n\tconverts Baudot to UTF-8\n\
+      \tdisplays characters on terminal screen\n    \"\"\"\n    def __init__(self):\n\
+      \        gr.sync_block.__init__(self,\n            name = \"Terminal Display\
+      \ Sink\",\n            in_sig = [np.byte],\n            out_sig = None)\n  \
+      \      self.message_port_register_out(pmt.intern('msg_out'))\n\n    def work(self,\
+      \ input_items, output_items):\n        global _samples\n        global _in_sync\n\
+      \        global _bit_count\n        global _num_ones\n        global _num_zeros\n\
+      \        global _byte\n        global _in_bit\n        global _shift\n     \
+      \   global outLine\n        global outCount\n\n        for ch in input_items[0]:\n\
+      \            if (ch == 1):\n                _num_ones += 1       # count ones\
+      \ in this symbol time\n            else:\n                _num_zeros += 1  \
+      \    # count zeros in this symbol time\n            _bit_count += 1        \
+      \  # count from first start bit after syncing\n            if (_in_sync == 0):\n\
+      \                if (ch == 0):\n                    _in_sync = 1\n         \
+      \           _bit_count = 1\n                    _num_ones = 0\n            \
+      \        _num_zeros = 1\n                    _byte = 0\n                   \
+      \ # print (\"sync\")\n\n            if (_bit_count in _samples) and (_in_sync\
+      \ == 1):    # end of this symbol time\n                if (_num_ones > 7):\n\
+      \                    _in_bit = 1\n                elif (_num_zeros > 7):\n \
+      \                   _in_bit = 0\n                else:\n                   \
+      \ _in_bit = -1\n                    _in_sync = 0    # lots of noise\n      \
+      \          # print (\"_in_sync\", _in_sync)\n                # print (\"_bit_count\"\
+      , _bit_count)\n                # print (\"_num_ones\", _num_ones)\n        \
+      \        # print (\"_num_zeros\", _num_zeros)\n                _num_ones = 0\n\
+      \                _num_zeros = 0\n\n                if (_in_sync == 1) and (_bit_count\
+      \ < 77):\n                    _byte >>= 1\n                    if (_in_bit ==\
+      \ 1):\n                        _byte += 16\n                    # print (_byte)\n\
+      \n                if (_in_sync == 1) and (_bit_count == 77):\n             \
+      \       if (_byte > 0) and (_byte < 64):\n                        _byte += _shift\n\
+      \                        if ((_byte == 0x1b) or (_byte == 0x3b)):        # shift\
+      \ out (figs)\n                            _shift = 0x20\n                  \
+      \      elif ((_byte == 0x1f) or (_byte == 0x3f)):        # shift in (ltrs)\n\
+      \                            _shift = 0\n                        else:\n   \
+      \                         if ((_byte != 2) and (_byte != 34)):\n           \
+      \                     outLine.append (ITA2[_byte])\n                    else:\n\
+      \                        outLine.append ('*')\n                    _num_ones\
+      \ = 0\n                    _num_zeros = 0\n                    _in_sync = 0\n\
+      \                    _bit_count = 0\n                    outCount += 1\n   \
+      \                 if ((outCount > 80) and (ITA2[_byte] == ' ')) or (_byte ==\
+      \ 2) or (_byte == 34):  # LF\n                        dispLine = \"\".join (outLine)\n\
+      \                        self.message_port_pub (pmt.intern('msg_out'), pmt.intern\
+      \ (dispLine))\n                        outLine = []\n                      \
+      \  outCount = 0\n\n        return len(input_items[0])\n\n"
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    _io_cache: ('Terminal Display Sink', 'my_sync_block', [], [('0', 'byte', 1)],
+      [('msg_out', 'message', 1)], "\nreads stream of 1's and 0's\nthere are 11 samples
+      for each bit time\nsynchronizes on start bit\nuses majority of samples in a
+      bit to determine validity\ncreates Baudot character\nconverts Baudot to UTF-8\ndisplays
+      characters on terminal screen\n", [])
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [744, 616.0]
+    rotation: 0
+    state: enabled
+- name: freq_xlating_fir_filter_xxx_0
+  id: freq_xlating_fir_filter_xxx
+  parameters:
+    affinity: ''
+    alias: ''
+    center_freq: center
+    comment: ''
+    decim: '40'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    samp_rate: rtl_rate
+    taps: firdes.low_pass(1.0,samp_rate,1000,400)
+    type: ccf
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [312, 224.0]
+    rotation: 0
+    state: enabled
+- name: qtgui_eye_sink_x_0
+  id: qtgui_eye_sink_x
+  parameters:
+    affinity: ''
+    alias: ''
+    alpha1: '1.0'
+    alpha10: '1.0'
+    alpha2: '1.0'
+    alpha3: '1.0'
+    alpha4: '1.0'
+    alpha5: '1.0'
+    alpha6: '1.0'
+    alpha7: '1.0'
+    alpha8: '1.0'
+    alpha9: '1.0'
+    autoscale: 'False'
+    axislabels: 'True'
+    color1: blue
+    color10: blue
+    color2: blue
+    color3: blue
+    color4: blue
+    color5: blue
+    color6: blue
+    color7: blue
+    color8: blue
+    color9: blue
+    comment: ''
+    ctrlpanel: 'False'
+    entags: 'True'
+    grid: 'False'
+    gui_hint: ''
+    label1: Signal 1
+    label10: Signal 10
+    label2: Signal 2
+    label3: Signal 3
+    label4: Signal 4
+    label5: Signal 5
+    label6: Signal 6
+    label7: Signal 7
+    label8: Signal 8
+    label9: Signal 9
+    legend: 'True'
+    marker1: '-1'
+    marker10: '-1'
+    marker2: '-1'
+    marker3: '-1'
+    marker4: '-1'
+    marker5: '-1'
+    marker6: '-1'
+    marker7: '-1'
+    marker8: '-1'
+    marker9: '-1'
+    nconnections: '1'
+    samp_per_symbol: sps
+    size: '1024'
+    srate: '500'
+    style1: '1'
+    style10: '1'
+    style2: '1'
+    style3: '1'
+    style4: '1'
+    style5: '1'
+    style6: '1'
+    style7: '1'
+    style8: '1'
+    style9: '1'
+    tr_chan: '0'
+    tr_delay: '0'
+    tr_level: '0.0'
+    tr_mode: qtgui.TRIG_MODE_FREE
+    tr_slope: qtgui.TRIG_SLOPE_POS
+    tr_tag: ''
+    type: float
+    update_time: '0.10'
+    width1: '1'
+    width10: '1'
+    width2: '1'
+    width3: '1'
+    width4: '1'
+    width5: '1'
+    width6: '1'
+    width7: '1'
+    width8: '1'
+    width9: '1'
+    ylabel: Amplitude
+    ymax: '1'
+    ymin: '-1'
+    yunit: '""'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1120, 336.0]
+    rotation: 0
+    state: true
+- name: qtgui_time_sink_x_0
+  id: qtgui_time_sink_x
+  parameters:
+    affinity: ''
+    alias: ''
+    alpha1: '1.0'
+    alpha10: '1.0'
+    alpha2: '1.0'
+    alpha3: '1.0'
+    alpha4: '1.0'
+    alpha5: '1.0'
+    alpha6: '1.0'
+    alpha7: '1.0'
+    alpha8: '1.0'
+    alpha9: '1.0'
+    autoscale: 'False'
+    axislabels: 'True'
+    color1: blue
+    color10: dark blue
+    color2: red
+    color3: green
+    color4: black
+    color5: cyan
+    color6: magenta
+    color7: yellow
+    color8: dark red
+    color9: dark green
+    comment: ''
+    ctrlpanel: 'False'
+    entags: 'True'
+    grid: 'False'
+    gui_hint: ''
+    label1: Signal 1
+    label10: Signal 10
+    label2: Signal 2
+    label3: Signal 3
+    label4: Signal 4
+    label5: Signal 5
+    label6: Signal 6
+    label7: Signal 7
+    label8: Signal 8
+    label9: Signal 9
+    legend: 'True'
+    marker1: '-1'
+    marker10: '-1'
+    marker2: '-1'
+    marker3: '-1'
+    marker4: '-1'
+    marker5: '-1'
+    marker6: '-1'
+    marker7: '-1'
+    marker8: '-1'
+    marker9: '-1'
+    name: '""'
+    nconnections: '2'
+    size: '512'
+    srate: '500'
+    stemplot: 'False'
+    style1: '1'
+    style10: '1'
+    style2: '1'
+    style3: '1'
+    style4: '1'
+    style5: '1'
+    style6: '1'
+    style7: '1'
+    style8: '1'
+    style9: '1'
+    tr_chan: '0'
+    tr_delay: '0'
+    tr_level: '0.0'
+    tr_mode: qtgui.TRIG_MODE_NORM
+    tr_slope: qtgui.TRIG_SLOPE_NEG
+    tr_tag: '""'
+    type: float
+    update_time: '0.10'
+    width1: '1'
+    width10: '1'
+    width2: '1'
+    width3: '1'
+    width4: '1'
+    width5: '1'
+    width6: '1'
+    width7: '1'
+    width8: '1'
+    width9: '1'
+    ylabel: Amplitude
+    ymax: '1.0'
+    ymin: '-1.0'
+    yunit: '""'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [816, 424.0]
+    rotation: 0
+    state: enabled
+- name: qtgui_waterfall_sink_x_0
+  id: qtgui_waterfall_sink_x
+  parameters:
+    affinity: ''
+    alias: ''
+    alpha1: '1.0'
+    alpha10: '1.0'
+    alpha2: '1.0'
+    alpha3: '1.0'
+    alpha4: '1.0'
+    alpha5: '1.0'
+    alpha6: '1.0'
+    alpha7: '1.0'
+    alpha8: '1.0'
+    alpha9: '1.0'
+    axislabels: 'True'
+    bw: rtl_rate/(rf_decim*2)
+    color1: '0'
+    color10: '0'
+    color2: '0'
+    color3: '0'
+    color4: '0'
+    color5: '0'
+    color6: '0'
+    color7: '0'
+    color8: '0'
+    color9: '0'
+    comment: 6,0,1,3
+    fc: freq
+    fftsize: '1024'
+    freqhalf: 'True'
+    grid: 'False'
+    gui_hint: 6,0,1,3
+    int_max: '10'
+    int_min: '-140'
+    label1: ''
+    label10: ''
+    label2: ''
+    label3: ''
+    label4: ''
+    label5: ''
+    label6: ''
+    label7: ''
+    label8: ''
+    label9: ''
+    legend: 'True'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    name: '""'
+    nconnections: '1'
+    showports: 'True'
+    type: complex
+    update_time: '0.10'
+    wintype: window.WIN_BLACKMAN_hARRIS
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [376, 408.0]
+    rotation: 0
+    state: true
+- name: rational_resampler_xxx_0
+  id: rational_resampler_xxx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: Output sample rate = 960kHz
+    decim: rf_decim
+    fbw: '0'
+    interp: '1'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    taps: '[]'
+    type: ccc
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [184, 376.0]
+    rotation: 0
+    state: true
+- name: rational_resampler_xxx_0_0
+  id: rational_resampler_xxx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: 'sample rate = 500 yields
+
+      11 samples per symbol'
+    decim: '960'
+    fbw: '0'
+    interp: '500'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    taps: ''
+    type: fff
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [904, 224.0]
+    rotation: 0
+    state: enabled
+- name: rational_resampler_xxx_1
+  id: rational_resampler_xxx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: Input samp rate = 48kHz
+    decim: '50'
+    fbw: '0'
+    interp: '1'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    taps: '[]'
+    type: ccc
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [536, 224.0]
+    rotation: 0
+    state: enabled
+- name: rx_preview
+  id: qtgui_edit_box_msg
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: "Scrolling preview: the last 80 \nreceived RTTY characters as \nthey\
+      \ arrive."
+    gui_hint: 4,0,1,2
+    is_pair: 'False'
+    is_static: 'False'
+    key: ''''''
+    label: '''RTTY RX'''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    type: string
+    value: ''''''
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [984, 576.0]
+    rotation: 0
+    state: enabled
+- name: soapy_rtlsdr_source_0
+  id: soapy_rtlsdr_source
+  parameters:
+    affinity: ''
+    agc: 'False'
+    alias: ''
+    bias: 'False'
+    bufflen: '16384'
+    center_freq: freq
+    comment: ''
+    dev_args: rtl=0,direct_samp=2
+    freq_correction: '0'
+    gain: rfGain
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    samp_rate: rtl_rate
+    type: fc32
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [48, 216.0]
+    rotation: 0
+    state: enabled
+- name: virtual_sink_0
+  id: virtual_sink
+  parameters:
+    alias: ''
+    comment: ''
+    stream_id: '"rcv_demod"'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1264, 248.0]
+    rotation: 0
+    state: true
+- name: virtual_source_0
+  id: virtual_source
+  parameters:
+    alias: ''
+    comment: ''
+    stream_id: '"rcv_demod"'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [344, 608.0]
+    rotation: 0
+    state: true
+
+connections:
+- [analog_quadrature_demod_cf_0, '0', rational_resampler_xxx_0_0, '0']
+- [blocks_char_to_float_0, '0', qtgui_time_sink_x_0, '1']
+- [blocks_multiply_const_vxx_0, '0', virtual_sink_0, '0']
+- [digital_binary_slicer_fb_0, '0', blocks_char_to_float_0, '0']
+- [digital_binary_slicer_fb_0, '0', epy_block_0, '0']
+- [epy_block_0, msg_out, rx_preview, val]
+- [freq_xlating_fir_filter_xxx_0, '0', rational_resampler_xxx_1, '0']
+- [rational_resampler_xxx_0, '0', qtgui_waterfall_sink_x_0, '0']
+- [rational_resampler_xxx_0_0, '0', blocks_multiply_const_vxx_0, '0']
+- [rational_resampler_xxx_0_0, '0', qtgui_eye_sink_x_0, '0']
+- [rational_resampler_xxx_1, '0', analog_quadrature_demod_cf_0, '0']
+- [soapy_rtlsdr_source_0, '0', freq_xlating_fir_filter_xxx_0, '0']
+- [soapy_rtlsdr_source_0, '0', rational_resampler_xxx_0, '0']
+- [virtual_source_0, '0', digital_binary_slicer_fb_0, '0']
+- [virtual_source_0, '0', qtgui_time_sink_x_0, '0']
+
+metadata:
+  file_format: 1
+  grc_version: 3.10.12.0
